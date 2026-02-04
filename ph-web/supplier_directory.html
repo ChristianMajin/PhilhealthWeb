@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>PhilHealth Procurement System</title>
+  <style>
+    * { box-sizing: border-box; font-family: Arial, Helvetica, sans-serif; }
+    body { margin: 0; background-color: #ffffff; color: #000; }
+
+    /* ----- Header ----- */
+    .header {
+      display: flex;
+      align-items: center;
+      background-color: #8fe04e;
+      padding: 10px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    /* Logo */
+    .logo {
+      display: flex;
+      align-items: center;
+      margin-right: 30px;
+      background: #fff;
+      padding: 5px 15px;
+      border-radius: 40px;
+      transition: transform 0.3s ease;
+    }
+    .logo:hover { transform: scale(1.05); }
+    .logo img { height: 45px; margin-right: 10px; }
+    .logo span { font-weight: bold; font-size: 14px; }
+
+    /* ----- Nav ----- */
+    .nav {
+      display: flex;
+      gap: 20px;
+      font-weight: bold;
+      font-size: 14px;
+      position: relative;
+      align-items: center;
+    }
+
+   .nav a {
+  text-decoration: none;
+  color: #000;
+  padding: 5px 0;
+  position: relative;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.nav a::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 3px;
+  background-color: #000;
+  left: 0;
+  bottom: -2px;
+  transition: width 0.3s ease;
+  border-radius: 2px;
+}
+
+/* Active link background for navbar */
+.nav a.active {
+  color: #000;                   /* text color */
+  background-color: #c5f2b5;     /* highlight background */
+  padding: 5px 12px;             /* make background visible */
+  border-radius: 6px;            /* rounded corners */
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* Optional: remove underline when active */
+.nav a.active::after {
+  display: none;
+}
+
+.nav a:hover {
+  color: rgb(0, 0, 0);
+  transform: scale(1.05);
+}
+
+.nav a:hover::after {
+  width: 100%;
+}
+
+.nav a.active {
+  color: #000;
+}
+
+.nav a.active::after {
+  width: 100%;
+}
+
+
+    /* Docs Dropdown in Navbar */
+    .docs-dropdown {
+      position: relative;
+      display: inline-block;
+      margin-left: 20px;
+    }
+
+    .docs-btn {
+      padding: 6px 12px;
+      background: #1a73e8;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .docs-menu {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      min-width: 120px;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      display: none;
+      z-index: 999;
+    }
+
+    .docs-menu.show { display: block; }
+
+    .docs-item {
+      padding: 8px 10px;
+      cursor: pointer;
+    }
+
+    .docs-item:hover { background-color: #f2f2f2; }
+
+    /* Table */
+    .container { padding: 20px; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; table-layout: fixed; }
+    thead th { border: 1px solid #bfbfbf; background-color: #f2f2f2; padding: 6px; text-align: left; cursor: pointer; }
+    tbody td { border: 1px solid #d9d9d9; padding: 4px 6px; height: 28px; }
+    tbody tr:hover { background-color: #eaf4ff; }
+    td input, select { width: 100%; padding: 4px 6px; font-size: 12.5px; border: 1px solid #ccc; border-radius: 4px; outline: none; }
+    td input:focus, select:focus { border-color: #5aa300; box-shadow: 0 0 2px rgba(90,163,0,0.6); background-color: #f2fff0; }
+
+    /* Buttons */
+    .export-buttons { display: flex; gap: 8px; margin-top: 15px; flex-wrap: wrap; }
+    .export-buttons button, #addRowBtn, #deleteRowBtn {
+      padding: 8px 18px; font-size: 13px; font-weight: 600; border-radius: 5px; border: none; cursor: pointer;
+      box-shadow: 0 3px 0 rgba(0,0,0,0.25); transition: transform 0.15s, box-shadow 0.15s, filter 0.15s;
+    }
+    .export-buttons button:hover { filter: brightness(1.05); }
+    #addRowBtn { font-size: 16px; font-weight: bold; background-color: #f0f0f0; }
+    .btn-success { background-color: #5aa300; color: #fff; }
+    .btn-danger { background-color: #c9302c; color: #fff; }
+    .btn-info { background-color: #31b0d5; color: #fff; }
+    .btn-sv-info { background-color: orange; color: black; }
+
+    /* Admin label */
+    .admin-label { margin-left: auto; font-weight: bold; font-size: 14px; background-color: #fff; padding: 6px 12px; border-radius: 20px; display: flex; align-items: center; }
+    .logout-btn { margin-left: 10px; padding: 4px 10px; font-size: 12px; font-weight: 600; color: #000; text-decoration: none; border: 1px solid #000; border-radius: 12px; }
+    .logout-btn:hover { background: #000; color: #fff; }
+    /* ===== SAFE MODERN UI ADD-ON (NON-DESTRUCTIVE) ===== */
+
+/* Soft background */
+body {
+  background: linear-gradient(180deg, #f6fbf3 0%, #ffffff 65%);
+}
+
+/* Card-style container */
+.container {
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  animation: fadeInUp 0.45s ease;
+}
+
+/* Header gradient polish */
+.header {
+  background: linear-gradient(90deg, #8fe04e, #b8f28a);
+  transition: background 0.3s ease;
+}
+
+.header.scrolled {
+  background: linear-gradient(90deg, #7fd83f, #a8e87a);
+}
+
+/* Keep your hover color, add subtle motion */
+tbody tr {
+  transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+tbody tr:hover {
+  transform: scale(1.002);
+}
+
+/* Inputs smoother interaction */
+td input,
+td select {
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Button micro-lift (works with your thick buttons) */
+.export-buttons button:hover,
+#addRowBtn:hover,
+#deleteRowBtn:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+}
+
+/* Dropdown (Docs) subtle shadow */
+.docs-menu {
+  box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+  animation: fadeInUp 0.2s ease;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+  </style>
+  
+</head>
+<script>
+window.addEventListener("scroll", () => {
+  const header = document.querySelector(".header");
+  if (!header) return;
+
+  if (window.scrollY > 10) {
+    header.classList.add("scrolled");
+  } else {
+    header.classList.remove("scrolled");
+  }
+});
+</script>
+
+<body>
+
+<div class="header">
+  <div class="logo">
+    <img src="https://www.parfait.com.ph/images/product-icon/philhealth-icon.png" alt="PhilHealth Logo">
+    <span>PhilHealth<br><small>Your Partner in Health</small></span>
+  </div>
+
+<nav class="nav">
+  <a href="dashboard.html">DASHBOARD</a>
+  <a href="purchase_request.html">PURCHASE REQUEST</a>
+  <a href="request_for_qoutation.html">REQUEST FOR QUOTATION</a>
+  <a href="philgeps_posting.html">PHILGEPS POSTING OF RFQ</a>
+  <a href="notice_of_award.html">NOTICE OF AWARD</a>
+  <a href="contract.html">CONTRACT</a>
+  <a href="supplier_directory.html" class="active">SUPPLIER DIRECTORY</a>
+  <a href="history.html">HISTORY</a>
+
+  <div class="docs-dropdown">
+    <button class="docs-btn">Docs</button>
+    <div class="docs-menu">
+      <div class="docs-item" onclick="window.open('https://drive.google.com/drive/home', '_blank')">
+        Google Drive
+      </div>
+    </div>
+  </div>
+</nav>
+
+
+  <div class="admin-label">
+    ADMIN
+    <a href="login.html" class="logout-btn">Logout</a>
+  </div>
+</div>
+
+<main class="content">
+  <div class="container">
+    <table>
+      <thead>
+        <tr>
+          <th data-column="0">Supplier ID</th>
+          <th data-column="1">Supplier Name</th>
+          <th data-column="2">Address</th>
+          <th data-column="3">Contact Person</th>
+          <th data-column="4">Contact Number</th>
+          <th data-column="5">Email Address</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="main-row">
+          <td><input type="number" placeholder="Supplier ID" /></td>
+          <td><input type="text" placeholder="Supplier Name" /></td>
+          <td><input type="text" placeholder="Address" /></td>
+          <td><input type="text" placeholder="Contact Person" /></td>
+          <td><input type="number" placeholder="Contact Number" /></td>
+          <td><input type="email" placeholder="Email Address" /></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="export-buttons">
+      <button class="btn btn-success" onclick="exportToExcel()">Save to Excel</button>
+      <button class="btn btn-danger" onclick="exportToPDF()">Save to PDF</button>
+      <button class="btn btn-info" onclick="exportToCSV()">Save to CSV</button>
+      <button class="btn-sv-info" onclick="saveTable()">Save Table</button>
+      <button class="btn-sv-info" onclick="loadTable()">Load Table</button>
+      <button id="addRowBtn">+</button>
+      <button id="deleteRowBtn">-</button>
+      <button onclick="window.location.href='recent_project.html'">View Recent Projects</button>
+      <button class="btn btn-success" onclick="saveProject()"> Save Project</button>
+
+    </div>
+  </div>
+</main>
+
+<script>
+  /* ===== SAVE/LOAD TABLE DATA ===== */
+  const SUPPLIER_STORAGE_KEY = "SUPPLIER_TABLE_DATA";
+  const tbody = document.querySelector("tbody");
+
+  function saveTableData() {
+    const rows = [];
+    tbody.querySelectorAll("tr").forEach(row => {
+      const data = {
+        inputs: [...row.querySelectorAll("input")].map(i => i.value),
+        selects: [...row.querySelectorAll("select")].map(s => s.selectedIndex)
+      };
+      rows.push(data);
+    });
+    localStorage.setItem(SUPPLIER_STORAGE_KEY, JSON.stringify(rows));
+  }
+
+  function loadTableData() {
+    const saved = localStorage.getItem(SUPPLIER_STORAGE_KEY);
+    if (!saved) return;
+    
+    const rows = JSON.parse(saved);
+    tbody.querySelectorAll("tr:not(.main-row)").forEach(r => r.remove());
+    
+    const firstRow = tbody.querySelector(".main-row");
+    if (rows.length > 0) {
+      const firstInputs = firstRow.querySelectorAll("input");
+      const firstSelects = firstRow.querySelectorAll("select");
+      rows[0].inputs.forEach((val, idx) => {
+        if (firstInputs[idx]) firstInputs[idx].value = val;
+      });
+      rows[0].selects.forEach((idx, i) => {
+        if (firstSelects[i]) firstSelects[i].selectedIndex = idx;
+      });
+    }
+
+    for (let i = 1; i < rows.length; i++) {
+      const row = firstRow.cloneNode(true);
+      const inputs = row.querySelectorAll("input");
+      const selects = row.querySelectorAll("select");
+      
+      rows[i].inputs.forEach((val, idx) => {
+        if (inputs[idx]) inputs[idx].value = val;
+      });
+      rows[i].selects.forEach((idx, j) => {
+        if (selects[j]) selects[j].selectedIndex = idx;
+      });
+      
+      tbody.appendChild(row);
+    }
+  }
+
+  function saveTable() {
+    const confirm_save = confirm("Are you sure you want to save the table data? This will overwrite any previously saved data.");
+    if (confirm_save) {
+      saveTableData();
+      alert("Table data saved successfully!");
+    }
+  }
+
+  function loadTable() {
+    loadTableData();
+    alert("Table data loaded successfully!");
+  }
+
+  const docsBtn = document.querySelector(".docs-btn");
+  const docsMenu = document.querySelector(".docs-menu");
+  docsBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    docsMenu.classList.toggle("show");
+  });
+  document.addEventListener("click", () => docsMenu.classList.remove("show"));
+
+  // Table row add/delete
+  const addRowBtn = document.getElementById("addRowBtn");
+  const deleteRowBtn = document.getElementById("deleteRowBtn");
+
+  addRowBtn.addEventListener("click", () => {
+    const tbody = document.querySelector("table tbody");
+    const lastRow = tbody.querySelector(".main-row:last-of-type");
+    const newRow = lastRow.cloneNode(true);
+    newRow.querySelectorAll("input").forEach(i => i.value = "");
+    tbody.appendChild(newRow);
+  });
+
+  deleteRowBtn.addEventListener("click", () => {
+    const tbody = document.querySelector("table tbody");
+    const rows = tbody.querySelectorAll(".main-row");
+    if (rows.length > 1) {
+      // Confirm before deleting
+      const confirm_delete = confirm("Are you sure you want to delete the last row? This action cannot be undone.");
+      if (confirm_delete) {
+        rows[rows.length - 1].remove();
+        alert("Row deleted successfully!");
+      }
+    } else {
+      alert("At least one row must remain in the table.");
+    }
+  });
+  // Key to store recent projects
+const RECENT_PROJECTS_KEY = "recentProjects";
+
+// Add project to recent projects
+function addToRecentProjects(projectName) {
+  let projects = JSON.parse(localStorage.getItem(RECENT_PROJECTS_KEY)) || [];
+
+  // Add new project at the top
+  projects.unshift({
+    name: projectName,
+    date: new Date().toLocaleString()
+  });
+
+  // Keep only last 10 projects
+  if (projects.length > 10) projects.pop();
+
+  localStorage.setItem(RECENT_PROJECTS_KEY, JSON.stringify(projects));
+}
+
+// Save Project Button Function
+function saveProject() {
+  const projectName = prompt("Enter Project Name", `Purchase_Request_${new Date().toISOString().split("T")[0]}`);
+  if (!projectName) return;
+
+  // Save table data first
+  saveTableData(); // ✅ ensures the table is saved in localStorage
+
+  // Add project to recent
+  addToRecentProjects(projectName);
+
+  alert(`Project "${projectName}" has been saved and added to Recent Projects.`);
+}
+
+</script>
+
+</body>
+</html>

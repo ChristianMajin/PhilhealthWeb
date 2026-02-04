@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>PhilHealth Procurement System</title>
+
+<!-- ===================== STYLES ===================== -->
+<style>
+* { box-sizing: border-box; font-family: Arial, Helvetica, sans-serif; }
+body { margin: 0; background:#fff; color:#000; }
+
+/* ===== HEADER ===== */
+.header {
+  display:flex;
+  align-items:center;
+  background:#8fe04e;
+  padding:10px 20px;
+}
+
+.logo {
+  display:flex;
+  align-items:center;
+  background:#fff;
+  padding:5px 15px;
+  border-radius:40px;
+  margin-right:40px;
+}
+.logo img { height:45px; margin-right:10px; }
+.logo span { font-weight:bold; font-size:14px; }
+
+/* ===== NAV BAR ===== */
+.nav { display:flex; gap:30px; font-weight:bold; font-size:14px; }
+.nav a {
+  text-decoration: none;
+  color: #000;
+  position: relative;
+  padding: 5px 12px;
+  border-radius: 6px;
+  transition: color 0.2s, transform 0.2s, background 0.3s;
+}
+
+/* Underline pseudo-element */
+.nav a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 3px;
+  width: 0;
+  background-color: #000;
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+/* Hover effect: underline expands */
+.nav a:hover::after {
+  width: 100%;
+}
+
+/* Active link: background + underline */
+.nav a.active {
+  background-color: #c5f2b5; /* highlight */
+  color: #000;
+}
+
+
+
+
+/* ===== CONTENT ===== */
+.container { padding:20px; }
+
+/* ===== TABLE ===== */
+table { width:100%; border-collapse:collapse; table-layout:fixed; font-size:13px; }
+thead th {
+  border:1px solid #bfbfbf;
+  background:#f2f2f2;
+  padding:6px;
+  cursor:pointer;
+}
+thead th:hover { background:#e5f7d4; }
+
+tbody td {
+  border:1px solid #d9d9d9;
+  padding:4px 6px;
+  height:28px;
+}
+tbody tr:hover { background:#eaf4ff; }
+
+td input, td select {
+  width:100%;
+  border:none;
+  padding:4px 6px;
+  font-size:12.5px;
+  outline:none;
+}
+td input:focus, td select:focus {
+  border:1px solid #5aa300;
+  background:#f2fff0;
+}
+
+/* ===== Thick Action Buttons (MATCH purchase_request.html) ===== */
+.export-buttons {
+  display: flex;
+  gap: 8px;
+  margin-top: 15px;
+  flex-wrap: wrap;
+}
+
+/* ===== Thick Action Buttons (MATCH purchase_request.html) ===== */
+.export-buttons {
+  display: flex;
+  gap: 8px;
+  margin-top: 15px;
+  flex-wrap: wrap;
+}
+
+.export-buttons button,
+#addRowBtn {
+  padding: 8px 18px;            /* ⬅ thicker height */
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+
+  box-shadow: 0 3px 0 rgba(0,0,0,0.25); /* ⬅ solid bottom edge */
+  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+}
+
+.export-buttons button,
+#deleteRowBtn {
+  padding: 8px 18px;            /* ⬅ thicker height */
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+
+  box-shadow: 0 3px 0 rgba(0,0,0,0.25); /* ⬅ solid bottom edge */
+  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+}
+
+/* Press / click effect */
+.export-buttons button:active,
+#addRowBtn:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 rgba(0,0,0,0.25);
+}
+
+.export-buttons button:active,
+#deleteRowBtn:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 rgba(0,0,0,0.25);
+}
+
+/* ===== Button Colors ===== */
+.btn-success {
+  background-color: #5aa300; /* Green */
+  color: #fff;
+}
+
+.btn-danger {
+  background-color: #c9302c; /* Red */
+  color: #fff;
+}
+
+.btn-info {
+  background-color: #31b0d5; /* Blue */
+  color: #fff;
+}
+
+.btn-sv-info {
+  background-color: orange;
+  color: black;
+}
+
+/* ===== MODAL ===== */
+.modal {
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.4);
+  z-index:9999;
+}
+.modal-content {
+  background:#fff;
+  width:420px;
+  margin:12% auto;
+  padding:20px;
+  border-radius:6px;
+}
+.modal-buttons { text-align:right; margin-top:15px; }
+.modal-buttons button { padding:6px 12px; cursor:pointer; }
+.btn-cancel { background:#ccc; }
+.btn-confirm { background:#5aa300; color:#fff; }
+
+/* ===== ADMIN LABEL ===== */
+.admin-label {
+  margin-left: auto; /* push to the far right */
+  font-weight: bold;
+  font-size: 14px;
+  background: #fff;
+  padding: 6px 12px;
+  border-radius: 20px;
+  cursor: default;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  display: flex;
+  align-items: center;
+}
+.logout-btn {
+  margin-left: 10px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  color: #000;
+  border: 1px solid #000;
+  border-radius: 12px;
+  background: transparent;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.logout-btn:hover {
+  background: #000;
+  color: #fff;
+}
+/* ===== MODERN UI ENHANCEMENTS (SAFE ADD-ON) ===== */
+
+/* Page background */
+body {
+  background: linear-gradient(180deg, #f6fbf3 0%, #ffffff 65%);
+}
+
+/* Content card */
+.container {
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  animation: fadeInUp 0.5s ease;
+}
+
+/* Header gradient polish */
+.header {
+  background: linear-gradient(90deg, #8fe04e, #b8f28a);
+  transition: background 0.3s ease;
+}
+
+.header.scrolled {
+  background: linear-gradient(90deg, #7fd83f, #a8e87a);
+}
+
+/* Navbar hover lift */
+.nav a:hover {
+  transform: translateY(-2px);
+}
+
+/* Table row interaction */
+tbody tr {
+  transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+tbody tr:hover {
+  transform: scale(1.003);
+}
+
+/* Inputs smoother focus */
+td input,
+td select {
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Button micro-interaction */
+.export-buttons button:hover,
+#addRowBtn:hover,
+#deleteRowBtn:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+}
+
+/* Modal animation */
+.modal-content {
+  animation: scaleIn 0.25s ease;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+</style>
+
+<!-- ===================== LIBRARIES ===================== -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<script>
+// Highlight the current page in the navbar
+document.addEventListener("DOMContentLoaded", () => {
+  const currentPage = location.pathname.split("/").pop().toLowerCase();
+
+  document.querySelectorAll(".nav a").forEach(link => {
+    const href = link.getAttribute("href").toLowerCase();
+    if (href === currentPage) {
+      link.classList.add("active");
+    } else {
+      link.classList.remove("active");
+    }
+  });
+});
+
+
+</script>
+<script>
+window.addEventListener("scroll", () => {
+  const header = document.querySelector(".header");
+  if (window.scrollY > 10) {
+    header.classList.add("scrolled");
+  } else {
+    header.classList.remove("scrolled");
+  }
+});
+</script>
+
+<body>
+
+<!-- ===================== HEADER ===================== -->
+<div class="header">
+  <div class="logo">
+    <img src="https://www.parfait.com.ph/images/product-icon/philhealth-icon.png" alt="PhilHealth Logo">
+    <span>PhilHealth<br><small>Your Partner in Health</small></span>
+  </div>
+
+  <nav class="nav">
+    <a href="dashboard.html">DASHBOARD</a>
+    <a href="purchase_request.html">PURCHASE REQUEST</a>
+    <a href="request_for_qoutation.html">REQUEST FOR QUOTATION</a>
+    <a href="philgeps_posting.html">PHILGEPS POSTING OF RFQ</a>
+    <a href="notice_of_award.html">NOTICE OF AWARD</a>
+    <a href="contract.html">CONTRACT</a>
+    <a href="supplier_directory.html">SUPPLIER DIRECTORY</a>
+    <a href="history.html">HISTORY</a>
+  </nav>
+
+  <!-- Admin label on top right -->
+<div class="admin-label">
+  ADMIN
+  <a href="login.html" class="logout-btn">Logout</a>
+</div>
+
+</div>
+
+
+<!-- ===================== CONTENT ===================== -->
+<div class="container">
+        <input
+    id="tableSearch"
+    type="text"
+    placeholder="Search🔍"
+    style="margin-bottom:10px; margin-top:0px; padding:6px 10px; width:260px; font-size:13px;"
+  >
+<table>
+<thead>
+<tr>
+  <th data-col="0">Control #</th>
+  <th data-col="1">Ref PR #</th>
+  <th data-col="2">Date Prepared</th>
+  <th data-col="3">Date Opening</th>
+  <th data-col="4">Date Closing</th>
+  <th data-col="5">Total TAT</th>
+</tr>
+</thead>
+
+<tbody>
+<tr class="main-row">
+  <td><input type="text" placeholder="Control #"></td>
+  <td><input type="text" placeholder="Ref PR #"></td>
+  <td><input type="date"></td>
+  <td><input type="date"></td>
+  <td><input type="date"></td>
+  <td><input type="number" placeholder="Total" class="rfqTAT" readonly></td>
+</tr>
+</tbody>
+</table>
+
+<div class="export-buttons">
+  <button class="btn-success" onclick="exportExcel()">Save Excel</button>
+  <button class="btn-danger" onclick="openPDF()">Save PDF</button>
+  <button class="btn-info" onclick="exportCSV()">Save CSV</button>
+  <button class="btn-sv-info" onclick="saveTable()">Save Table</button>
+  <button class="btn-sv-info" onclick="loadTable()">Load Table</button>
+  <button id="addRowBtn">+</button>
+  <button id="deleteRowBtn">-</button>
+  <button onclick="window.location.href='recent_project.html'">View Recent Projects</button>
+  <button class="btn btn-success" onclick="saveProject()"> Save Project</button>
+</div>
+</div>
+
+<!-- ===================== PDF MODAL ===================== -->
+<div id="paperModal" class="modal">
+  <div class="modal-content">
+    <b>Select Paper Size</b><br><br>
+    <label><input type="radio" name="paper" value="a4" checked> A4</label><br>
+    <label><input type="radio" name="paper" value="letter"> Letter</label><br><br>
+    <div class="modal-buttons">
+      <button class="btn-cancel" onclick="closePDF()">Cancel</button>
+      <button class="btn-confirm" onclick="exportPDF()">Export</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== SCRIPTS ===================== -->
+<script>
+/* ===== STORAGE KEY ===== */
+const RFQ_STORAGE_KEY = "RFQ_TABLE_DATA";
+const tbody = document.querySelector("tbody");
+
+/* ===== SAVE TABLE DATA ===== */
+function saveTableData() {
+  const rows = [];
+  tbody.querySelectorAll("tr").forEach(row => {
+    const data = {
+      inputs: [...row.querySelectorAll("input")].map(i => i.value),
+      selects: [...row.querySelectorAll("select")].map(s => s.selectedIndex)
+    };
+    rows.push(data);
+  });
+  localStorage.setItem(RFQ_STORAGE_KEY, JSON.stringify(rows));
+}
+
+/* ===== LOAD TABLE DATA ===== */
+function loadTableData() {
+  const saved = localStorage.getItem(RFQ_STORAGE_KEY);
+  if (!saved) return;
+  
+  const rows = JSON.parse(saved);
+  
+  // Clear existing rows except the first
+  tbody.querySelectorAll("tr:not(.main-row)").forEach(r => r.remove());
+  
+  // Restore first row
+  const firstRow = tbody.querySelector(".main-row");
+  if (rows.length > 0) {
+    const firstInputs = firstRow.querySelectorAll("input");
+    const firstSelects = firstRow.querySelectorAll("select");
+    rows[0].inputs.forEach((val, idx) => {
+      if (firstInputs[idx]) firstInputs[idx].value = val;
+    });
+    rows[0].selects.forEach((idx, i) => {
+      if (firstSelects[i]) firstSelects[i].selectedIndex = idx;
+    });
+  }
+
+  // Restore additional rows
+  for (let i = 1; i < rows.length; i++) {
+    const row = firstRow.cloneNode(true);
+    const inputs = row.querySelectorAll("input");
+    const selects = row.querySelectorAll("select");
+    
+    rows[i].inputs.forEach((val, idx) => {
+      if (inputs[idx]) inputs[idx].value = val;
+    });
+    rows[i].selects.forEach((idx, j) => {
+      if (selects[j]) selects[j].selectedIndex = idx;
+    });
+    
+    tbody.appendChild(row);
+  }
+  
+  // Recalculate TAT for all rows
+  document.querySelectorAll("tbody tr").forEach(row => {
+    calculateTAT(row);
+  });
+}
+
+/* ===== SAVE TABLE (Button function) ===== */
+function saveTable() {
+  const confirm_save = confirm("Are you sure you want to save the table data? This will overwrite any previously saved data.");
+  if (confirm_save) {
+    saveTableData();
+    alert("Table data saved successfully!");
+  }
+}
+
+/* ===== LOAD TABLE (Button function) ===== */
+function loadTable() {
+  loadTableData();
+  alert("Table data loaded successfully!");
+}
+
+/* ===== ADD ROW ===== */
+function addNewRow() {
+  const tbody = document.querySelector("tbody");
+  const row = tbody.querySelector(".main-row").cloneNode(true);
+  row.querySelectorAll("input").forEach(i=>i.value="");
+  tbody.appendChild(row);
+  row.querySelector("input").focus();
+  
+  // Trigger TAT calculation for the new row
+  calculateTAT(row);
+}
+document.getElementById("addRowBtn").onclick = addNewRow;
+
+/* ===== CTRL + F HOTKEY (WORKING) ===== */
+document.addEventListener("keydown", e => {
+  if (e.ctrlKey && e.key.toLowerCase() === "f") {
+    e.preventDefault();
+    addNewRow();
+  }
+}, true);
+
+  // ===== Ctrl + D HOTKEY =====
+  document.addEventListener("keydown", e => {
+    if (e.ctrlKey && e.key.toLowerCase() === "d") {
+      e.preventDefault();
+      deleteLastRow();
+    }
+  }, true);
+  
+/* ===== SORTING ===== */
+document.querySelectorAll("thead th").forEach(th=>{
+  let asc=true;
+  th.onclick=()=>{
+    const idx=th.dataset.col;
+    const tbody=document.querySelector("tbody");
+    [...tbody.rows].sort((a,b)=>{
+      return asc
+        ? a.cells[idx].innerText.localeCompare(b.cells[idx].innerText)
+        : b.cells[idx].innerText.localeCompare(a.cells[idx].innerText);
+    }).forEach(r=>tbody.appendChild(r));
+    asc=!asc;
+  };
+});
+
+/* ===== EXPORT ===== */
+function exportExcel(){
+  const ws=XLSX.utils.table_to_sheet(document.querySelector("table"));
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,"Sheet1");
+  XLSX.writeFile(wb,"purchase_request.xlsx");
+}
+function exportCSV(){ exportExcel(); }
+function openPDF(){ paperModal.style.display="block"; }
+function closePDF(){ paperModal.style.display="none"; }
+function exportPDF(){
+  closePDF();
+  html2pdf().from(document.querySelector("table")).save("purchase_request.pdf");
+}
+
+/* ===== DELETE ROW ===== */
+function deleteLastRow() {
+  const tbody = document.querySelector("tbody");
+  const rows = tbody.querySelectorAll("tr");
+
+  // Keep at least one row in the table
+  if (rows.length <= 1) {
+    alert("At least one row must remain in the table.");
+    return;
+  }
+
+  // Confirm before deleting
+  const confirm_delete = confirm("Are you sure you want to delete the last row? This action cannot be undone.");
+  if (confirm_delete) {
+    tbody.removeChild(rows[rows.length - 1]);
+    alert("Row deleted successfully!");
+  }
+}
+
+// Attach to minus button
+document.getElementById("deleteRowBtn").onclick = deleteLastRow;
+
+</script>
+
+<script>
+/* ===== TAT CALCULATION FOR ALL ROWS ===== */
+function calculateTAT(row) {
+  // Get all date inputs in the row
+  const dateInputs = row.querySelectorAll("input[type='date']");
+  console.log("Date inputs found:", dateInputs.length);
+  
+  // Date Prepared is the FIRST date input (index 0)
+  if (dateInputs.length < 1) {
+    console.log("No date inputs in row");
+    return;
+  }
+  
+  const datePreparedInput = dateInputs[0]; // Date Prepared is FIRST, not third
+  const tatInput = row.querySelector(".rfqTAT");
+  
+  console.log("Date Prepared Input value:", datePreparedInput?.value);
+  console.log("TAT Input Element:", tatInput);
+  
+  if (!datePreparedInput || !tatInput) {
+    console.log("Missing Date Prepared or TAT input");
+    return;
+  }
+
+  const prDate = localStorage.getItem("PR_DateReceived");
+  console.log("PR Date from localStorage:", prDate);
+  
+  const datePrepared = datePreparedInput.value;
+  console.log("Date Prepared value:", datePrepared);
+  
+  if (!datePrepared) {
+    tatInput.value = "";
+    console.log("No Date Prepared entered");
+    return;
+  }
+
+  if (!prDate) {
+    tatInput.value = "";
+    console.log("No PR Date in localStorage");
+    return;
+  }
+
+  try {
+    // Parse dates with explicit UTC time to avoid timezone issues
+    // Format: YYYY-MM-DD from HTML date input
+    const start = new Date(prDate + 'T00:00:00Z');
+    const end = new Date(datePrepared + 'T00:00:00Z');
+    
+    console.log("Start date (PR) UTC:", start);
+    console.log("End date (RFQ) UTC:", end);
+    
+    // Calculate difference in days
+    const diffTime = end - start;
+    const diffDays = diffTime / (1000 * 60 * 60 * 24);
+
+    console.log("Raw difference in milliseconds:", diffTime);
+    console.log("Raw difference in days:", diffDays);
+    console.log("Rounded difference in days:", Math.round(diffDays));
+    
+    tatInput.value = Math.round(diffDays);
+  } catch (e) {
+    console.error("TAT Calculation Error:", e);
+    tatInput.value = "";
+  }
+}
+
+// Listen for changes on any date inputs in RFQ rows
+document.addEventListener("change", function(e) {
+  if (e.target.type === "date" && e.target.closest("tbody tr")) {
+    console.log("Date changed in RFQ table");
+    const row = e.target.closest("tr");
+    calculateTAT(row);
+  }
+});
+
+// Listen for PR date changes from the other page
+window.addEventListener("prDateChanged", (event) => {
+  console.log("PR Date Changed Event - New Date:", event.detail.date);
+  document.querySelectorAll("tbody tr").forEach(row => {
+    calculateTAT(row);
+  });
+});
+
+// Calculate TAT for all rows when page loads
+document.addEventListener("DOMContentLoaded", () => {
+  console.log("RFQ Page Loaded");
+  setTimeout(() => {
+    document.querySelectorAll("tbody tr").forEach(row => {
+      calculateTAT(row);
+    });
+  }, 100);
+});
+
+// Periodically check for PR_DateReceived updates 
+setInterval(() => {
+  const prDate = localStorage.getItem("PR_DateReceived");
+  if (prDate) {
+    console.log("Periodic check - PR Date found:", prDate);
+    document.querySelectorAll("tbody tr").forEach(row => {
+      calculateTAT(row);
+    });
+  }
+}, 500);
+// Key to store recent projects
+const RECENT_PROJECTS_KEY = "recentProjects";
+
+// Add project to recent projects
+function addToRecentProjects(projectName) {
+  let projects = JSON.parse(localStorage.getItem(RECENT_PROJECTS_KEY)) || [];
+
+  // Add new project at the top
+  projects.unshift({
+    name: projectName,
+    date: new Date().toLocaleString()
+  });
+
+  // Keep only last 10 projects
+  if (projects.length > 10) projects.pop();
+
+  localStorage.setItem(RECENT_PROJECTS_KEY, JSON.stringify(projects));
+}
+
+// Save Project Button Function
+function saveProject() {
+  const projectName = prompt("Enter Project Name", `Purchase_Request_${new Date().toISOString().split("T")[0]}`);
+  if (!projectName) return;
+
+  // Save table data first
+  saveTableData(); // ✅ ensures the table is saved in localStorage
+
+  // Add project to recent
+  addToRecentProjects(projectName);
+
+  alert(`Project "${projectName}" has been saved and added to Recent Projects.`);
+}
+
+</script>
+
+
+
+</body>
+</html>

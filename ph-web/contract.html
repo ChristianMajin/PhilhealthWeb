@@ -1,0 +1,1329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>PhilHealth Procurement System</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background-color: #ffffff;
+      color: #000;
+    }
+    .status-select {
+  width: 100%;
+  height: 26px;
+  font-size: 12.5px;
+  padding: 2px 6px;
+  border: 1px solid #bfbfbf;
+  border-radius: 3px;
+  background-color: #ffffff;
+  cursor: pointer;
+}
+
+.status-select:focus {
+  outline: none;
+  border-color: #5aa300;
+  box-shadow: 0 0 2px rgba(90, 163, 0, 0.6);
+}
+
+
+    .header {
+      display: flex;
+      align-items: center;
+      background-color: #8fe04e;
+      padding: 10px 20px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      margin-right: 30px;
+      background: #fff;
+      padding: 5px 15px;
+      border-radius: 40px;
+    }
+
+    .logo img {
+      height: 45px;
+      margin-right: 10px;
+    }
+
+    .logo span {
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .nav {
+  display: flex;
+  gap: 30px;
+  font-weight: bold;
+  font-size: 14px;
+  position: relative; /* needed for underline positioning */
+}
+
+/* Navbar Links */
+/* NAV LINKS: underline appears instantly on hover */
+/* NAV LINK: underline with smooth slide animation */
+.nav a {
+  position: relative;
+  text-decoration: none;
+  color: #000;
+  padding: 5px 0;
+  transition: color 0.2s ease;
+}
+
+.nav a::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 3px;
+  background-color: #000;
+  left: 0;
+  bottom: -2px;
+
+  /* Hidden by scaling */
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.nav a:hover::after {
+  transform: scaleX(1); /* animate underline from left to right */
+}
+
+/* Active tab styling */
+.nav a.active {
+  color: #000;
+  background-color: #c5f2b5;
+  padding: 5px 12px;
+  border-radius: 6px;
+}
+
+.nav a.active::after {
+  transform: scaleX(1);  /* underline fully visible for active link */
+}
+
+
+    .container {
+      padding: 20px;
+    }
+    .processor-select {
+  width: 100%;
+  height: 26px;
+  font-size: 12.5px;
+  padding: 2px 6px;
+  border: 1px solid #bfbfbf;
+  border-radius: 3px;
+  background-color: #ffffff;
+  cursor: pointer;
+}
+
+.processor-select:focus {
+  outline: none;
+  border-color: #5aa300;
+  box-shadow: 0 0 2px rgba(90, 163, 0, 0.6);
+}
+
+
+    table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed; 
+  font-size: 13px;
+}
+
+thead th {
+  border: 1px solid #bfbfbf;
+  background-color: #f2f2f2;
+  padding: 6px;
+  text-align: center;
+  font-weight: bold;
+}
+footer {
+  margin-bottom: 0%;
+}
+
+tbody td {
+  border: 1px solid #d9d9d9;
+  padding: 4px 6px;
+  height: 28px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+tbody tr:hover {
+  background-color: #eaf4ff;
+}
+
+    .footer {
+      background-color: #8fe04e;
+      text-align: center;
+      padding: 10px;
+      font-weight: bold;
+      margin-top: 40px;
+    }
+
+    thead th {
+  border-bottom: 2px solid #000;
+  padding: 6px;
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+thead th:hover {
+  background-color: #e5f7d4;
+}
+.procurement-select {
+  width: 100%;
+  padding: 4px 6px;
+  font-size: 13px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+}
+select {
+  width: 100%;
+  padding: 4px 6px;
+  font-size: 13px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+}
+.status-select {
+  width: 100%;
+  height: 24px;
+  font-size: 13px;
+  border: none;
+  background: transparent;
+  outline: none;
+  cursor: pointer;
+}
+
+.status-select:focus {
+  background-color: #fff;
+  border: 1px solid #4a90e2;
+}
+.details-row {
+  display: none;
+  background-color: #f9fff2;
+}
+
+.details-container {
+  padding: 12px;
+}
+
+.inner-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.inner-table th {
+  background-color: #e5f7d4;
+  border: 1px solid #bfbfbf;
+  padding: 6px;
+  text-align: left;
+}
+
+.inner-table td {
+  border: 1px solid #d9d9d9;
+  padding: 6px;
+}
+.procurement-select {
+  width: 100%;
+  height: 26px;
+  font-size: 12.5px;
+  padding: 2px 6px;
+  border: 1px solid #bfbfbf;
+  border-radius: 3px;
+  background-color: #ffffff;
+  cursor: pointer;
+}
+
+.procurement-select:focus {
+  outline: none;
+  border-color: #5aa300;
+  box-shadow: 0 0 2px rgba(90, 163, 0, 0.6);
+}
+td input {
+  width: 100%;
+  border: none;
+  padding: 4px 6px;
+  font-size: 12.5px;
+  outline: none;
+}
+
+td input:focus {
+  background-color: #f2fff0;
+  border: 1px solid #5aa300;
+}
+.office-select {
+  width: 100%;
+  height: 26px;
+  font-size: 12.5px;
+  padding: 2px 6px;
+  border: 1px solid #bfbfbf;
+  border-radius: 3px;
+  background-color: #ffffff;
+  cursor: pointer;
+}
+
+.office-select:focus {
+  outline: none;
+  border-color: #5aa300;
+  box-shadow: 0 0 2px rgba(90, 163, 0, 0.6);
+}
+/* Paper Size Modal */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+  background: #fff;
+  width: 420px;
+  margin: 10% auto;
+  padding: 20px;
+  border-radius: 6px;
+}
+
+.modal-header {
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.paper-size-group label {
+  display: block;
+  margin: 6px 0;
+  font-size: 14px;
+}
+
+.modal-buttons {
+  margin-top: 15px;
+  text-align: right;
+}
+
+.modal-buttons button {
+  padding: 6px 12px;
+  margin-left: 6px;
+  cursor: pointer;
+}
+
+.btn-cancel {
+  background: #ccc;
+  border: none;
+}
+
+.btn-confirm {
+  background: #5aa300;
+  color: #fff;
+  border: none;
+}
+
+
+/* ===== Thick Action Buttons (Global) ===== */
+.export-buttons {
+  display: flex;
+  gap: 8px;
+  margin-top: 15px;
+  flex-wrap: wrap;
+}
+
+/* Base styles for all export buttons */
+.export-buttons button {
+  padding: 8px 18px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 3px 0 rgba(0,0,0,0.25);
+  transition: transform 0.15s ease,
+              box-shadow 0.15s ease,
+              filter 0.15s ease;
+}
+
+/* Press effect */
+.export-buttons button:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 rgba(0,0,0,0.25);
+}
+
+/* Specific colors */
+.btn-success {
+  background-color: #5aa300; /* Excel green */
+  color: #fff;
+}
+
+.btn-danger {
+  background-color: #c9302c; /* PDF / Delete red */
+  color: #fff;
+}
+
+.btn-info {
+  background-color: #31b0d5; /* CSV blue */
+  color: #fff;
+}
+
+/* Hover effect */
+.export-buttons button:hover {
+  filter: brightness(1.05);
+}
+
+/* Add / Delete Row buttons (outside export-buttons) */
+#addRowBtn {
+  padding: 8px 14px;
+  font-size: 16px;
+  font-weight: bold;
+  background-color: #f0f0f0;
+  color: #000;
+  border-radius: 5px;
+  cursor: pointer;
+  box-shadow: 0 3px 0 rgba(0,0,0,0.25);
+  transition: transform 0.15s ease,
+              box-shadow 0.15s ease,
+              filter 0.15s ease;
+}
+
+#addRowBtn:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 rgba(0,0,0,0.25);
+}
+
+#deleteRowBtn {
+  padding: 8px 18px;
+  font-size: 13px;
+  font-weight: 600;
+  background-color: #f0f0f0;
+  color: #000;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 3px 0 rgba(0,0,0,0.25);
+}
+
+#deleteRowBtn:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 rgba(0,0,0,0.25);
+}
+
+
+/* Button colors */
+.btn-success {
+  background-color: #5aa300; /* Excel / CSV green */
+  color: #fff;
+}
+
+.btn-danger {
+  background-color: #c9302c; /* PDF red */
+  color: #fff;
+}
+
+.btn-info {
+  background-color: #31b0d5;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-sv-info {
+  background-color: orange;
+  color: black;
+}
+
+
+/* Hover */
+.export-buttons button:hover,
+#addRowBtn:hover {
+  filter: brightness(1.05);
+}
+
+/* + Add Row button */
+#addRowBtn {
+  padding: 8px 14px;
+  font-size: 16px;
+  font-weight: bold;
+  background-color: #f0f0f0;
+}
+
+/* ===== ADMIN LABEL ===== */
+.admin-label {
+    display: flex;
+    align-items: center;
+    margin-left: auto; /* push to right */
+    font-weight: bold;
+    font-size: 14px;
+    background-color: #fff;
+    padding: 5px 12px;
+    border-radius: 20px;
+    gap: 12px; /* spacing between ADMIN text and logout button */
+}
+.export-buttons {
+  display: flex !important;
+
+.admin-label {
+  margin-left: auto;         
+  font-weight: bold;
+  font-size: 14px;
+  background-color: #fff;
+  padding: 6px 12px;
+  border-radius: 20px;
+  cursor: default;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  gap: 20px; /* space between ADMIN text and Logout button */
+}
+
+.logout-btn {
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    color: #000;
+    border: 1px solid #000;
+    border-radius: 12px;
+    background: transparent;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.logout-btn:hover {
+    background: #000;
+    color: #fff;
+}
+
+
+}
+/* ===== SAFE MODERN UI ADD-ON (NON-DESTRUCTIVE) ===== */
+
+/* Soft background */
+body {
+  background: linear-gradient(180deg, #f6fbf3 0%, #ffffff 65%);
+}
+
+/* Card-style container */
+.container {
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  animation: fadeInUp 0.45s ease;
+}
+
+/* Header gradient polish */
+.header {
+  background: linear-gradient(90deg, #8fe04e, #b8f28a);
+  transition: background 0.3s ease;
+}
+
+.header.scrolled {
+  background: linear-gradient(90deg, #7fd83f, #a8e87a);
+}
+
+/* Keep your hover color, just add motion */
+tbody tr {
+  transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+tbody tr:hover {
+  transform: scale(1.002);
+}
+
+/* Inputs smoother interaction */
+td input,
+td select {
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Button micro-lift (compatible with thick buttons) */
+.export-buttons button:hover,
+#addRowBtn:hover,
+#deleteRowBtn:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+}
+
+/* Modal pop animation */
+.modal-content {
+  animation: scaleIn 0.25s ease;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+  </style>
+
+  <!-- Export Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<script>
+  const headers = document.querySelectorAll("thead th");
+  let sortDirection = {};
+
+  headers.forEach(header => {
+    header.addEventListener("click", () => {
+      const table = header.closest("table");
+      const tbody = table.querySelector("tbody");
+      const rows = Array.from(tbody.querySelectorAll("tr"))
+        .filter(row => row.children.length > 1); 
+
+      const columnIndex = header.dataset.column;
+      const direction = sortDirection[columnIndex] === "asc" ? "desc" : "asc";
+      sortDirection[columnIndex] = direction;
+
+      rows.sort((a, b) => {
+        let aText = a.children[columnIndex].innerText.trim();
+        let bText = b.children[columnIndex].innerText.trim();
+
+        let aNum = parseFloat(aText.replace(/,/g, ""));
+        let bNum = parseFloat(bText.replace(/,/g, ""));
+
+        if (!isNaN(aNum) && !isNaN(bNum)) {
+          return direction === "asc" ? aNum - bNum : bNum - aNum;
+        }
+
+        return direction === "asc"
+          ? aText.localeCompare(bText)
+          : bText.localeCompare(aText);
+      });
+
+      rows.forEach(row => tbody.appendChild(row));
+    });
+  });
+</script>
+<script>
+function openProcessorManager() {
+  document.getElementById("processorModal").style.display = "block";
+  renderProcessorLists();
+}
+
+function closeProcessorManager() {
+  document.getElementById("processorModal").style.display = "none";
+}
+
+function addProcessor() {
+  const name = document.getElementById("procName").value.trim();
+  const category = document.getElementById("procCategory").value;
+  if (!name) return;
+
+  const data = getProcessors();
+  data[category].push(name);
+  saveProcessors(data);
+
+  document.getElementById("procName").value = "";
+  renderProcessorLists();
+}
+
+function removeProcessor(category, index) {
+  const data = getProcessors();
+  data[category].splice(index, 1);
+  saveProcessors(data);
+  renderProcessorLists();
+}
+
+function renderProcessorLists() {
+  const data = getProcessors();
+  const lowList = document.getElementById("lowList");
+  const highList = document.getElementById("highList");
+
+  lowList.innerHTML = "";
+  highList.innerHTML = "";
+
+  data.low.forEach((p, i) => {
+    lowList.innerHTML += `<li>${p} <button onclick="removeProcessor('low',${i})">❌</button></li>`;
+  });
+
+  data.high.forEach((p, i) => {
+    highList.innerHTML += `<li>${p} <button onclick="removeProcessor('high',${i})">❌</button></li>`;
+  });
+}
+
+
+function updateEndUser(officeSelect) {
+  const row = officeSelect.closest("tr");
+  const endUserSelect = row.querySelector(".enduser-select");
+
+  // Clear previous options
+  endUserSelect.innerHTML = '<option value="">-- Select End User --</option>';
+
+  if (officeSelect.value === "OVP") {
+    const ovpUsers = ["OVP", "ITMU", "Legal", "HCDMD", "PAU", "MSD", "HRMU", "PSMU", "FMS", "CASHIERING", "SBAC"];
+
+    ovpUsers.forEach(user => {
+      const opt = document.createElement("option");
+      opt.value = user;
+      opt.textContent = user;
+      endUserSelect.appendChild(opt);
+    });
+  }
+  if (officeSelect.value === "North") {
+    const ovpUsers = ["Branch", "LHIO Caloocan", "Mandaluyong", "Manila", "DMW OFp", "Valenzuela"];
+
+    ovpUsers.forEach(user => {
+      const opt = document.createElement("option");
+      opt.value = user;
+      opt.textContent = user;
+      endUserSelect.appendChild(opt);
+    });
+  }
+  if (officeSelect.value === "Central") {
+    const ovpUsers = ["Branch", "LHIO Quezon City", "LHIO Fairview", "LHIO Rizal", ];
+
+    ovpUsers.forEach(user => {
+      const opt = document.createElement("option");
+      opt.value = user;
+      opt.textContent = user;
+      endUserSelect.appendChild(opt);
+    });
+  }
+  if (officeSelect.value === "South") {
+    const ovpUsers = ["Branch", "LHIO Makati", "LHIO Pasig", "LHIO Las pinas", "DMW LHIO paranaque", "Global Satellite Office"];
+
+    ovpUsers.forEach(user => {
+      const opt = document.createElement("option");
+      opt.value = user;
+      opt.textContent = user;
+      endUserSelect.appendChild(opt);
+    });
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const nav = document.querySelector(".nav");
+  const links = nav.querySelectorAll("a");
+  const underline = nav.querySelector(".nav-underline");
+
+  function moveUnderline(el) {
+    underline.style.width = el.offsetWidth + "px";
+    underline.style.left = el.offsetLeft + "px";
+  }
+
+  // Set underline on hover
+  links.forEach(link => {
+    link.addEventListener("mouseenter", () => moveUnderline(link));
+    link.addEventListener("click", () => {
+      links.forEach(l => l.classList.remove("active"));
+      link.classList.add("active");
+      moveUnderline(link);
+    });
+  });
+
+  // On page load, position underline on active link
+  const activeLink = document.querySelector(".nav a.active") || links[0];
+  moveUnderline(activeLink);
+
+  // Return underline to active link when mouse leaves nav
+  nav.addEventListener("mouseleave", () => moveUnderline(document.querySelector(".nav a.active") || links[0]));
+});
+
+</script>
+
+<script>
+window.addEventListener("scroll", () => {
+  const header = document.querySelector(".header");
+  if (!header) return;
+
+  if (window.scrollY > 10) {
+    header.classList.add("scrolled");
+  } else {
+    header.classList.remove("scrolled");
+  }
+});
+</script>
+
+<body>
+ 
+
+
+ <div class="header">
+  <div class="logo">
+    <img src="https://www.parfait.com.ph/images/product-icon/philhealth-icon.png" alt="PhilHealth Logo">
+    <span>PhilHealth<br><small>Your Partner in Health</small></span>
+  </div>
+
+  <nav class="nav">
+    <a href="dashboard.html">DASHBOARD</a>
+    <a href="purchase_request.html" class="active">PURCHASE REQUEST</a>
+    <a href="request_for_qoutation.html">REQUEST FOR QUOTATION</a>
+    <a href="philgeps_posting.html">PHILGEPS POSTING OF RFQ</a>
+    <a href="notice_of_award.html">NOTICE OF AWARD</a>
+    <a href="contract.html">CONTRACT</a>
+    <a href="supplier_directory.html">SUPPLIER DIRECTORY</a>
+    <a href="history.html">HISTORY</a>
+  </nav>
+
+  <!-- Admin label on top-right -->
+ <!-- Admin label with Logout text button -->
+<div class="admin-label">
+    <span>ADMIN</span>
+    <a href="login.html" class="logout-btn">Logout</a>
+</div>
+
+
+
+
+</div>
+
+  <main class="content">
+  <div class="container">
+    <input     id="tableSearch"
+    type="text"
+    placeholder="Search🔍"
+    style="margin-bottom:10px; padding:6px 10px; width:260px; font-size:13px;">
+    <table>
+     <thead>
+  <tr>
+    <th data-column="0">Control #</th>
+    <th data-column="1">Ref PR#</th>
+    <th data-column="2">Supplier</th>
+    <th data-column="3">ABC</th>
+    <th data-column="4">Date Prepared</th>
+    <th data-column="5">Date Approved</th>
+    <th data-column="6">Date Issued</th>
+    <th data-column="7">Date Conformed</th>
+    <th data-column="8">Contract Cost</th>
+  </tr>
+</thead>
+
+<tbody>
+  <tr class="main-row">
+    <td><input type="number" placeholder="Control #" /></td>
+    <td><input type="number" placeholder="Ref PR#" /></td>
+    <td><input type="text" placeholder="Supplier" /></td>
+    <td><input type="number" placeholder="ABC" /></td>
+    <td><input type="date" placeholder="Date Prepared" /></td>
+    <td><input type="date" placeholder="Date Approved" /></td>
+    <td><input type="date" placeholder="Date Issued" /></td>
+    <td><input type="date" placeholder="Date Conformed" /></td>
+    <td><input type="number" placeholder="Contract Cost" /></td>
+  </tr>
+</tbody>
+
+    </table>
+</div>
+
+  <div class="export-buttons">
+  <button class="btn btn-success" onclick="exportToExcel()">
+    Save to Excel 
+  </button>
+
+  <button class="btn btn-danger" onclick="exportToPDF()">
+    Save to PDF
+  </button>
+
+  <button class="btn btn-info" onclick="exportToCSV()">
+  Save to CSV
+  </button>
+  <button class="btn-sv-info" onclick="saveTable()">Save Table</button>
+  <button class="btn-sv-info" onclick="loadTable()">Load Table</button>
+
+  <button id="addRowBtn" class="btn btn-add">+</button>
+  <button id="deleteRowBtn" class="btn btn-danger">-</button>
+  <button onclick="window.location.href='recent_project.html'">View Recent Projects</button>
+  <button class="btn btn-success" onclick="saveProject()"> Save Project</button>
+
+</div>
+
+
+</main>   
+
+  <script>
+    // Export to Excel (.xlsx)
+    function exportToExcel() {
+        try {
+            if (typeof XLSX === 'undefined') {
+                alert('XLSX library is loading. Please wait a moment and try again.');
+                return;
+            }
+            
+            const table = document.querySelector('table');
+            if (!table) {
+                alert('Table not found!');
+                return;
+            }
+            
+            const ws = XLSX.utils.table_to_sheet(table);
+            
+            // Auto-fit columns
+            const colWidths = [];
+            table.querySelectorAll('tr').forEach(row => {
+                const cells = row.querySelectorAll('th, td');
+                cells.forEach((cell, idx) => {
+                    const width = Math.max((cell.textContent.length || 10) + 2, 10);
+                    colWidths[idx] = Math.max(colWidths[idx] || 0, width);
+                });
+            });
+            ws['!cols'] = colWidths.map(w => ({ wch: w }));
+            
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+            const date = new Date().toISOString().split('T')[0];
+            XLSX.writeFile(wb, `purchase_request_${date}.xlsx`);
+            alert('Excel file downloaded successfully!');
+        } catch (e) {
+            alert('Error exporting to Excel: ' + e.message);
+            console.error(e);
+        }
+    }
+
+    // Export to PDF
+    function exportToPDF() {
+  document.getElementById("paperSizeModal").style.display = "block";
+}
+
+function closePaperSizeDialog() {
+  document.getElementById("paperSizeModal").style.display = "none";
+}
+
+function confirmPaperSizeAndExport() {
+  const selectedSize = document.querySelector(
+    'input[name="paperSize"]:checked'
+  ).value;
+
+  closePaperSizeDialog();
+
+  const element = document.querySelector("table");
+
+  const opt = {
+    margin: 10,
+    filename: `purchase_request_${new Date().toISOString().split('T')[0]}.pdf`,
+    image: { type: "jpeg", quality: 0.98 },
+    html2canvas: { scale: 2 },
+    jsPDF: {
+      orientation: "landscape",
+      unit: "mm",
+      format: selectedSize
+    }
+  };
+
+  html2pdf().set(opt).from(element).save();
+}
+    // Export to CSV
+    function exportToCSV() {
+        try {
+            if (typeof XLSX === 'undefined') {
+                alert('XLSX library is loading. Please wait a moment and try again.');
+                return;
+            }
+            
+            const table = document.querySelector('table');
+            if (!table) {
+                alert('Table not found!');
+                return;
+            }
+            
+            const ws = XLSX.utils.table_to_sheet(table);
+             // Add Row button logic (only once)
+    document.getElementById("addRowBtn").addEventListener("click", () => {
+      const tbody = document.querySelector("table tbody");
+      const lastRow = tbody.querySelector(".main-row:last-of-type");
+      if (!lastRow) return;
+
+      const newRow = lastRow.cloneNode(true);
+      newRow.querySelectorAll("input").forEach(i => i.value = "");
+      newRow.querySelectorAll("select").forEach(s => s.selectedIndex = 0);
+      tbody.appendChild(newRow);
+    });
+            
+            // Auto-fit columns
+            const colWidths = [];
+            table.querySelectorAll('tr').forEach(row => {
+                const cells = row.querySelectorAll('th, td');
+                cells.forEach((cell, idx) => {
+                    const width = Math.max((cell.textContent.length || 10) + 2, 10);
+                    colWidths[idx] = Math.max(colWidths[idx] || 0, width);
+                });
+            });
+            ws['!cols'] = colWidths.map(w => ({ wch: w }));
+            
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+            const date = new Date().toISOString().split('T')[0];
+            XLSX.writeFile(wb, `purchase_request_${date}.csv`);
+            alert('CSV file downloaded successfully!');
+        } catch (e) {
+            alert('Error exporting to CSV: ' + e.message);
+            console.error(e);
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+  const nav = document.querySelector(".nav");
+  const links = nav.querySelectorAll("a");
+  const underline = nav.querySelector(".nav-underline");
+
+  function moveUnderline(el) {
+    underline.style.width = el.offsetWidth + "px";
+    underline.style.left = el.offsetLeft + "px";
+  }
+
+  // Hover & click
+  links.forEach(link => {
+    link.addEventListener("mouseenter", () => moveUnderline(link));
+    link.addEventListener("click", () => {
+      links.forEach(l => l.classList.remove("active"));
+      link.classList.add("active");
+      moveUnderline(link);
+    });
+  });
+
+  // Set underline on page load
+  const activeLink = document.querySelector(".nav a.active") || links[0];
+  moveUnderline(activeLink);
+
+  // Return underline to active link when mouse leaves nav
+  nav.addEventListener("mouseleave", () => {
+    moveUnderline(document.querySelector(".nav a.active") || links[0]);
+  });
+});
+
+  </script>
+  <script>
+  const currentPage = location.pathname.split("/").pop();
+  document.querySelectorAll(".nav a").forEach(link => {
+    if (link.getAttribute("href") === currentPage) {
+      link.classList.add("active");
+    } else {
+      link.classList.remove("active");
+    }
+  });
+</script>
+<!-- Paper Size Selection Modal -->
+<div id="paperSizeModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">Select Paper Size for PDF</div>
+
+    <div class="paper-size-group">
+      <label><input type="radio" name="paperSize" value="a4" checked> A4 (210 × 297 mm)</label>
+      <label><input type="radio" name="paperSize" value="letter"> Letter (8.5 × 11 in)</label>
+      <label><input type="radio" name="paperSize" value="legal"> Legal (8.5 × 14 in)</label>
+      <label><input type="radio" name="paperSize" value="a3"> A3 (297 × 420 mm)</label>
+      <label><input type="radio" name="paperSize" value="a5"> A5 (148 × 210 mm)</label>
+      <label><input type="radio" name="paperSize" value="tabloid"> Tabloid (11 × 17 in)</label>
+    </div>
+
+    <div class="modal-buttons">
+      <button class="btn-cancel" onclick="closePaperSizeDialog()">Cancel</button>
+      <button class="btn-confirm" onclick="confirmPaperSizeAndExport()">Export PDF</button>
+    </div>
+  </div>
+</div>
+
+
+</body>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const addRowBtn = document.getElementById("addRowBtn");
+  const deleteRowBtn = document.getElementById("deleteRowBtn");
+  const tbody = document.querySelector("table tbody");
+  const searchInput = document.getElementById("searchInput"); // if you have a search box
+
+  let clipboard = null; // for Ctrl+C/Ctrl+V
+  let undoStack = [];   // for undo
+  
+  /* ===== SAVE/LOAD TABLE DATA ===== */
+  const CONTRACT_STORAGE_KEY = "CONTRACT_TABLE_DATA";
+
+  function saveTableData() {
+    const rows = [];
+    tbody.querySelectorAll("tr").forEach(row => {
+      const data = {
+        inputs: [...row.querySelectorAll("input")].map(i => i.value),
+        selects: [...row.querySelectorAll("select")].map(s => s.selectedIndex)
+      };
+      rows.push(data);
+    });
+    localStorage.setItem(CONTRACT_STORAGE_KEY, JSON.stringify(rows));
+  }
+
+  function loadTableData() {
+    const saved = localStorage.getItem(CONTRACT_STORAGE_KEY);
+    if (!saved) return;
+    
+    const rows = JSON.parse(saved);
+    tbody.querySelectorAll("tr:not(.main-row)").forEach(r => r.remove());
+    
+    const firstRow = tbody.querySelector(".main-row");
+    if (rows.length > 0) {
+      const firstInputs = firstRow.querySelectorAll("input");
+      const firstSelects = firstRow.querySelectorAll("select");
+      rows[0].inputs.forEach((val, idx) => {
+        if (firstInputs[idx]) firstInputs[idx].value = val;
+      });
+      rows[0].selects.forEach((idx, i) => {
+        if (firstSelects[i]) firstSelects[i].selectedIndex = idx;
+      });
+    }
+
+    for (let i = 1; i < rows.length; i++) {
+      const row = firstRow.cloneNode(true);
+      const inputs = row.querySelectorAll("input");
+      const selects = row.querySelectorAll("select");
+      
+      rows[i].inputs.forEach((val, idx) => {
+        if (inputs[idx]) inputs[idx].value = val;
+      });
+      rows[i].selects.forEach((idx, j) => {
+        if (selects[j]) selects[j].selectedIndex = idx;
+      });
+      
+      tbody.appendChild(row);
+    }
+  }
+
+  function saveTable() {
+    const confirm_save = confirm("Are you sure you want to save the table data? This will overwrite any previously saved data.");
+    if (confirm_save) {
+      saveTableData();
+      alert("Table data saved successfully!");
+    }
+  }
+
+  function loadTable() {
+    loadTableData();
+    alert("Table data loaded successfully!");
+  }
+
+  // ========================
+  // ADD ROW
+  // ========================
+  function addRow() {
+    const lastRow = tbody.querySelector("tr:last-of-type");
+    if (!lastRow) return;
+
+    saveState(); // save before adding
+
+    const newRow = lastRow.cloneNode(true);
+
+    newRow.querySelectorAll("input").forEach(input => input.value = "");
+    newRow.querySelectorAll("select").forEach(select => select.selectedIndex = 0);
+
+    tbody.appendChild(newRow);
+  }
+
+  addRowBtn.addEventListener("click", addRow);
+
+  // ========================
+  // DELETE ROW
+  // ========================
+  function deleteLastRow() {
+    const rows = tbody.querySelectorAll("tr");
+    if (rows.length > 1) {
+      // Confirm before deleting
+      const confirm_delete = confirm("Are you sure you want to delete the last row? This action cannot be undone.");
+      if (confirm_delete) {
+        saveState(); // save before deleting
+        tbody.removeChild(rows[rows.length - 1]);
+        alert("Row deleted successfully!");
+      }
+    } else {
+      alert("At least one row must remain.");
+    }
+  }
+
+  if (deleteRowBtn) {
+    deleteRowBtn.addEventListener("click", deleteLastRow);
+  }
+
+  // ========================
+  // SAVE & RESTORE STATE
+  // ========================
+  function saveState() {
+    const rowsData = Array.from(tbody.rows).map(r => ({
+      inputs: Array.from(r.querySelectorAll("input")).map(i => i.value),
+      selects: Array.from(r.querySelectorAll("select")).map(s => s.selectedIndex)
+    }));
+    undoStack.push(rowsData);
+    if (undoStack.length > 20) undoStack.shift(); // limit undo history
+  }
+
+  function restoreState(state) {
+    tbody.innerHTML = "";
+    state.forEach(rowData => {
+      const newRow = tbody.querySelector(".main-row")?.cloneNode(true) || document.createElement("tr");
+      newRow.innerHTML = tbody.querySelector(".main-row")?.innerHTML || "";
+      newRow.querySelectorAll("input").forEach((i, idx) => i.value = rowData.inputs[idx] || "");
+      newRow.querySelectorAll("select").forEach((s, idx) => s.selectedIndex = rowData.selects[idx] || 0);
+      tbody.appendChild(newRow);
+    });
+  }
+
+  // ========================
+  // SEARCH FILTER
+  // ========================
+  if (searchInput) {
+    searchInput.addEventListener("input", () => {
+      const q = searchInput.value.toLowerCase();
+      Array.from(tbody.rows).forEach(row => {
+        row.style.display = row.innerText.toLowerCase().includes(q) ? "" : "none";
+      });
+    });
+  }
+
+  // ========================
+  // ARROW KEY NAVIGATION
+  // ========================
+  function moveFocus(current, direction) {
+    const cells = Array.from(current.closest("tr").querySelectorAll("input, select"));
+    let index = cells.indexOf(current);
+    const row = current.closest("tr");
+    let newCell;
+
+    switch(direction) {
+      case "ArrowRight":
+        if (index < cells.length - 1) newCell = cells[index + 1];
+        break;
+      case "ArrowLeft":
+        if (index > 0) newCell = cells[index - 1];
+        break;
+      case "ArrowDown":
+        const nextRow = row.nextElementSibling;
+        if (nextRow) newCell = nextRow.querySelectorAll("input, select")[index];
+        break;
+      case "ArrowUp":
+        const prevRow = row.previousElementSibling;
+        if (prevRow) newCell = prevRow.querySelectorAll("input, select")[index];
+        break;
+    }
+
+    if (newCell) {
+      newCell.focus();
+      if (newCell.tagName === "INPUT") newCell.select();
+    }
+  }
+
+  // ========================
+  // KEYBOARD SHORTCUTS
+  // ========================
+  document.addEventListener("keydown", e => {
+    const active = document.activeElement;
+    const isInput = active.tagName === "INPUT" || active.tagName === "SELECT";
+
+    if (e.ctrlKey) {
+      switch (e.key.toLowerCase()) {
+        case "f": // Ctrl+F -> add row
+          e.preventDefault();
+          addRow();
+          break;
+        case "d": // Ctrl+D -> delete row
+          e.preventDefault();
+          deleteLastRow();
+          break;
+        case "c": // Ctrl+C -> copy row
+          e.preventDefault();
+          if (isInput) {
+            const row = active.closest("tr");
+            if (row) {
+              clipboard = {
+                inputs: Array.from(row.querySelectorAll("input")).map(i => i.value),
+                selects: Array.from(row.querySelectorAll("select")).map(s => s.selectedIndex)
+              };
+              alert("Row copied!");
+            }
+          }
+          break;
+        case "v": // Ctrl+V -> paste row
+          e.preventDefault();
+          if (clipboard) {
+            saveState();
+            const newRow = tbody.querySelector(".main-row")?.cloneNode(true);
+            if (newRow) {
+              newRow.querySelectorAll("input").forEach((i, idx) => i.value = clipboard.inputs[idx]);
+              newRow.querySelectorAll("select").forEach((s, idx) => s.selectedIndex = clipboard.selects[idx]);
+              tbody.appendChild(newRow);
+            }
+          }
+          break;
+        case "z": // Ctrl+Z -> undo
+          e.preventDefault();
+          if (undoStack.length > 0) {
+            const lastState = undoStack.pop();
+            restoreState(lastState);
+          }
+          break;
+      }
+    } else if (isInput) {
+      // Arrow keys navigation
+      if (["ArrowRight","ArrowLeft","ArrowUp","ArrowDown"].includes(e.key)) {
+        e.preventDefault();
+        moveFocus(active, e.key);
+      }
+    }
+  });
+});
+// Key to store recent projects
+const RECENT_PROJECTS_KEY = "recentProjects";
+
+// Add project to recent projects
+function addToRecentProjects(projectName) {
+  let projects = JSON.parse(localStorage.getItem(RECENT_PROJECTS_KEY)) || [];
+
+  // Add new project at the top
+  projects.unshift({
+    name: projectName,
+    date: new Date().toLocaleString()
+  });
+
+  // Keep only last 10 projects
+  if (projects.length > 10) projects.pop();
+
+  localStorage.setItem(RECENT_PROJECTS_KEY, JSON.stringify(projects));
+}
+
+// Save Project Button Function
+function saveProject() {
+  const projectName = prompt("Enter Project Name", `Purchase_Request_${new Date().toISOString().split("T")[0]}`);
+  if (!projectName) return;
+
+  // Save table data first
+  saveTableData(); // ✅ ensures the table is saved in localStorage
+
+  // Add project to recent
+  addToRecentProjects(projectName);
+
+  alert(`Project "${projectName}" has been saved and added to Recent Projects.`);
+}
+
+</script>
+
+
+
+
+</html>

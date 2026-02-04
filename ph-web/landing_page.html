@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>PhilHealth Procurement System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      height: 100vh;
+      background: linear-gradient(135deg, #8fe04e, #f7e94b);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ===== Card Container ===== */
+    .landing-card {
+      background: #ffffff;
+      width: 420px;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+      text-align: center;
+      animation: fadeInUp 0.8s ease;
+    }
+
+    /* ===== Logo ===== */
+    .logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .logo img {
+      height: 60px;
+      margin-right: 12px;
+    }
+
+    .logo span {
+      font-weight: bold;
+      font-size: 16px;
+      text-align: left;
+    }
+
+    /* ===== Title ===== */
+    .title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 6px;
+      color: #333;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 25px;
+    }
+
+    /* ===== Buttons ===== */
+    .office-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .office-btn {
+      padding: 14px;
+      font-size: 15px;
+      font-weight: bold;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .office-btn span {
+      font-size: 18px;
+    }
+
+    .btn-procurement {
+      background: linear-gradient(135deg, #5aa300, #8fe04e);
+      color: #fff;
+      box-shadow: 0 6px 0 #3f7f00;
+    }
+
+    .btn-sbac {
+      background: linear-gradient(135deg, #f7e94b, #ffd000);
+      color: #333;
+      box-shadow: 0 6px 0 #c4a600;
+    }
+
+    .office-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 0 rgba(0,0,0,0.25);
+    }
+
+    .office-btn:active {
+      transform: translateY(2px);
+      box-shadow: 0 4px 0 rgba(0,0,0,0.25);
+    }
+
+    /* ===== Footer ===== */
+    .footer-text {
+      margin-top: 20px;
+      font-size: 11px;
+      color: #888;
+    }
+
+    /* ===== Animations ===== */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="landing-card">
+    <div class="logo">
+      <img src="https://www.parfait.com.ph/images/product-icon/philhealth-icon.png" alt="PhilHealth Logo">
+      <span>PhilHealth<br><small>Your Partner in Health</small></span>
+    </div>
+
+    <div class="title">Welcome to the Procurement/SBAC System</div>
+    <div class="subtitle">Please select your office to continue</div>
+
+    <div class="office-buttons">
+      <button class="office-btn btn-procurement" onclick="goProcurement()">
+        <span>🏢</span> PROCUREMENT
+      </button>
+
+      <button class="office-btn btn-sbac" onclick="goSBAC()">
+        <span>📋</span> SBAC
+      </button>
+    </div>
+
+    <div class="footer-text">
+      © 2026 OJT'S WEBSITE PROJECT
+    </div>
+  </div>
+
+  <script>
+    function goProcurement() {
+      window.location.href = "dashboard.html";
+    }
+
+    function goSBAC() {
+      window.location.href = "testtestSBAC.html";
+    }
+  </script>
+
+</body>
+</html>

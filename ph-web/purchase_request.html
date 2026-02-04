@@ -1,0 +1,1372 @@
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>PhilHealth Procurement System</title>
+    <style>
+      * { box-sizing: border-box; font-family: Arial, Helvetica, sans-serif; }
+      body { margin: 0; background-color: #ffffff; color: #000; }
+
+      /* ----- Header & Navbar ----- */
+  .header {
+    display: flex;
+    align-items: center;
+    /* remove justify-content: space-between; */
+    background-color: #8fe04e;
+    padding: 10px 20px;
+    margin: auto;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transition: background-color 0.3s ease;
+  }
+
+
+
+      .logo {
+        display: flex;
+        align-items: center;
+        margin-right: 50px;
+        background: #fff;
+        padding: 5px 15px;
+        border-radius: 40px;
+        transition: transform 0.3s ease;
+      }
+
+      .logo:hover { transform: scale(1.05); }
+      .logo img { height: 45px; margin-right: 10px; }
+      .logo span { font-weight: bold; font-size: 14px; }
+
+      .nav {
+        display: flex;
+        gap: 30px;
+        font-weight: bold;
+        font-size: 14px;
+        position: relative;
+      }
+
+  /* NAV LINK */
+  .nav a {
+    text-decoration: none;
+    color: #000;
+    padding: 5px 0;
+    position: relative;
+    transition: color 0.2s ease, transform 0.2s ease;
+  }
+
+  /* Hover: line appears instantly */
+  .nav a::after {
+    content: '';
+    position: absolute;
+    width: 100%;         /* full width */
+    height: 3px;
+    background-color: #000;
+    left: 0;
+    bottom: -2px;
+    display: none;       /* hidden by default */
+  }
+
+  .nav a:hover::after {
+    display: block;      /* appears instantly on hover */
+  }
+
+  /* Active tab */
+  .nav a.active {
+    color: #000;                  /* text color */
+    background-color: #c5f2b5;    /* highlight background */
+    padding: 5px 12px;
+    border-radius: 6px;
+  }
+
+  /* Active tab underline should never appear */
+  .nav a.active::after {
+    display: none;
+  }
+
+  .admin-label {
+    font-weight: bold;
+    font-size: 14px;
+    color: #000;
+    margin-left: auto; /* pushes it to the far right */
+    background-color: #fff;
+    padding: 5px 10px;
+    border-radius: 20px;
+}
+
+
+
+
+      /* ----- Table & Inputs ----- */
+      table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 13px; }
+      thead th { border: 1px solid #bfbfbf; background-color: #f2f2f2; padding: 6px; text-align: left; font-weight: bold; cursor: pointer; }
+      thead th:hover { background-color: #e5f7d4; }
+      tbody td { border: 1px solid #d9d9d9; padding: 4px 6px; height: 28px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      tbody tr:hover { background-color: #eaf4ff; }
+      td input { width: 100%; border: none; padding: 4px 6px; font-size: 12.5px; outline: none; }
+      td input:focus { background-color: #f2fff0; border: 1px solid #5aa300; }
+
+      select { width: 100%; padding: 4px 6px; font-size: 13px; border: 1px solid #ccc; border-radius: 4px; background-color: #fff; }
+      .status-select, .procurement-select, .processor-select, .office-select, .expense-select { cursor: pointer; }
+      .status-select:focus, .procurement-select:focus, .processor-select:focus, .office-select:focus, .expense-select:focus { outline: none; border-color: #5aa300; box-shadow: 0 0 2px rgba(90, 163, 0, 0.6); }
+
+      .footer { background-color: #8fe04e; text-align: center; padding: 10px; font-weight: bold; margin-top: 40px; }
+
+      /* ----- Paper Size Modal ----- */
+      .modal { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); }
+      .modal-content { background: #fff; width: 420px; margin: 10% auto; padding: 20px; border-radius: 6px; }
+      .modal-header { font-weight: bold; font-size: 16px; margin-bottom: 10px; }
+      .paper-size-group label { display: block; margin: 6px 0; font-size: 14px; }
+      .modal-buttons { margin-top: 15px; text-align: right; }
+      .modal-buttons button { padding: 6px 12px; margin-left: 6px; cursor: pointer; }
+      .btn-cancel { background: #ccc; border: none; }
+      .btn-confirm { background: #5aa300; color: #fff; border: none; }
+
+/* ===== Thick Action Buttons (MATCH purchase_request.html) ===== */
+.export-buttons {
+  display: flex;
+  gap: 8px;
+  margin-top: 15px;
+  flex-wrap: wrap;
+}
+
+.export-buttons button,
+#addRowBtn {
+  padding: 8px 18px;            /* ⬅ thicker height */
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+
+  box-shadow: 0 3px 0 rgba(0,0,0,0.25); /* ⬅ solid bottom edge */
+  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+}
+
+.export-buttons button,
+#deleteRowBtn {
+  padding: 8px 18px;            /* ⬅ thicker height */
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+
+  box-shadow: 0 3px 0 rgba(0,0,0,0.25); /* ⬅ solid bottom edge */
+  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+}
+
+/* Press / click effect */
+.export-buttons button:active,
+#addRowBtn:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 rgba(0,0,0,0.25);
+}
+
+/* ===== Button Colors ===== */
+.btn-success {
+  background-color: #5aa300; /* Green */
+  color: #fff;
+}
+
+.btn-danger {
+  background-color: #c9302c; /* Red */
+  color: #fff;
+}
+
+.btn-info {
+  background-color: #31b0d5; /* Blue */
+  color: #fff;
+}
+
+.btn-sv-info {
+  background-color: orange;
+  color: black;
+}
+
+#processorModal ul {
+  padding-left: 18px;
+}
+
+#processorModal li {
+  margin-bottom: 6px;
+}
+
+#processorModal li button {
+  margin-left: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.logout-btn {
+  margin-left: 10px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  color: #000;
+  border: 1px solid #000;
+  border-radius: 12px;
+  background: transparent;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.logout-btn:hover {
+  background: #000;
+  color: #fff;
+}
+/* ===== GLOBAL BACKGROUND ===== */
+body {
+  background: linear-gradient(180deg, #f6fbf3 0%, #ffffff 60%);
+}
+
+/* ===== MAIN CONTAINER CARD ===== */
+.container {
+  background: #ffffff;
+  padding: 14px;
+  border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  animation: fadeInUp 0.5s ease;
+}
+
+/* ===== HEADER ENHANCEMENT ===== */
+.header {
+  background: linear-gradient(90deg, #8fe04e, #b8f28a);
+}
+
+.header.scrolled {
+  background: linear-gradient(90deg, #7fd83f, #a8e87a);
+}
+
+/* ===== NAV LINK MICRO-ANIMATION ===== */
+.nav a {
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.nav a:hover {
+  transform: translateY(-2px);
+}
+
+/* ===== TABLE ROW ANIMATION ===== */
+tbody tr {
+  transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+tbody tr:hover {
+  transform: scale(1.003);
+}
+
+/* ===== INPUT & SELECT SMOOTH FOCUS ===== */
+input, select {
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* ===== BUTTON HOVER EFFECT ===== */
+.export-buttons button:hover,
+#addRowBtn:hover,
+#deleteRowBtn:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+}
+
+/* ===== MODAL ANIMATION ===== */
+.modal-content {
+  animation: scaleIn 0.25s ease;
+}
+
+/* ===== LOGO CONTAINER ===== */
+/* ===============================
+   LOGO FLOATING
+   =============================== */
+
+
+
+
+
+    </style>
+
+    <!-- Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  </head>
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const currentPage = location.pathname.split("/").pop().toLowerCase();
+
+    document.querySelectorAll(".nav a").forEach(link => {
+      const href = link.getAttribute("href").toLowerCase();
+      if (href === currentPage) {
+        link.classList.add("active");  // add the active class
+      } else {
+        link.classList.remove("active");
+      }
+    });
+  });
+ 
+
+  </script>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  const tbody = document.querySelector("tbody");
+
+  /* ======================
+     OFFICE → END USER MAP
+  ====================== */
+  const officeEndUserMap = {
+    OVP: [
+      "OVP","ITMU","LEGAL","HCDMD","PAU","MSD",
+      "MRMU","PSMU","FMS","CASHIERING","SBAC"
+    ],
+    North: [
+      "BRANCH","LHIO CALOOCAN","LHIO MANDALUYONG",
+      "LHIO MANILA","LHIO DMW OFP","LHIO VALENZUELA"
+    ],
+    Central: [
+      "BRANCH","LHIO QUEZON CITY","LHIO FAIRVIEW","LHIO RIZAL"
+    ],
+    South: [
+      "BRANCH","LHIO MAKATI","LHIO PASIG",
+      "LHIO LAS PIÑAS","LHIO PARAÑAQUE",
+      "GLOBAL SATELLITE OFFICE"
+    ]
+  };
+
+  /* ======================
+     EVENT DELEGATION
+  ====================== */
+  tbody.addEventListener("change", (e) => {
+    if (!e.target.classList.contains("office-select")) return;
+
+    const officeSelect = e.target;
+    const row = officeSelect.closest("tr");
+    const endUserSelect = row.querySelector(".enduser-select");
+
+    endUserSelect.innerHTML =
+      '<option value="">-- Select End User --</option>';
+
+    const users = officeEndUserMap[officeSelect.value];
+    if (!users) return;
+
+    users.forEach(user => {
+      const opt = document.createElement("option");
+      opt.value = user;
+      opt.textContent = user;
+      endUserSelect.appendChild(opt);
+    });
+  });
+
+});
+</script>
+
+<script>
+window.addEventListener("scroll", () => {
+  const header = document.querySelector(".header");
+  if (window.scrollY > 10) {
+    header.classList.add("scrolled");
+  } else {
+    header.classList.remove("scrolled");
+  }
+});
+</script>
+
+
+
+  <body>
+
+   <div class="header">
+  <div class="logo">
+    <img src="https://www.parfait.com.ph/images/product-icon/philhealth-icon.png" alt="PhilHealth Logo">
+    <span>PhilHealth<br><small>Your Partner in Health</small></span>
+  </div>
+  <nav class="nav">
+    <a href="dashboard.html">DASHBOARD</a>
+    <a href="purchase_request.html">PURCHASE REQUEST</a>
+    <a href="request_for_qoutation.html">REQUEST FOR QUOTATION</a>
+    <a href="philgeps_posting.html">PHILGEPS POSTING OF RFQ</a>
+    <a href="notice_of_award.html">NOTICE OF AWARD</a>
+    <a href="contract.html">CONTRACT</a>
+    <a href="supplier_directory.html">SUPPLIER DIRECTORY</a>
+    <a href="history.html">HISTORY</a>
+  </nav>
+ <div class="admin-label">
+  ADMIN
+  <a href="login.html" class="logout-btn">Logout</a>
+</div>
+
+</div>
+
+ 
+ 
+    <main class="content">
+      <div class="container">
+        <input
+    id="tableSearch"
+    type="text"
+    placeholder="Search🔍"
+    style="margin-bottom:10px; margin-top:10px; padding:6px 10px; width:260px; font-size:13px;"
+  >
+
+        <table>
+          <thead>
+            <tr>
+              <th data-column="0">Control #</th>
+              <th data-column="1">Date Received</th>
+              <th data-column="2">Expense Code</th>
+              <th data-column="3">Particulars</th>
+              <th data-column="4">ABC</th>
+              <th data-column="5">End User</th>
+              <th data-column="6">Office</th>
+              <th data-column="7">Procurement Mode</th>
+              <th data-column="8">Processor</th>
+              <th data-column="9">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="main-row">
+              <!--Updated Main-Row -->
+              <td><input type="text" placeholder="Control #" class="control-no" /></td>
+              <td><input type="date" class="date-received" id="prDateReceived"/></td>
+              <td>
+                <select class="expense-select">
+                  <option value="">-- Select Expense Code --</option>
+                  <option value="EC1001">EC1001 – Office Supplies</option>
+                  <option value="EC1002">EC1002 – IT Equipment</option>
+                  <option value="EC1003">EC1003 – Furniture</option>
+                  <option value="EC1004">EC1004 – Maintenance</option>
+                  <option value="EC1005">EC1005 – Training / Seminar</option>
+                </select>
+              </td>
+              <td><input type="text" placeholder="Particulars" /></td>
+              <td><input type="number" placeholder="ABC" /></td>
+              <td>
+                <select class="enduser-select">
+                  <option value="">-- Select End User --</option>
+                </select>
+              </td>
+              <td>
+                  <select class="office-select">
+                  <option value="">-- Select Office --</option>
+                  <option value="OVP">OVP</option>
+                  <option value="North">North</option>
+                  <option value="Central">Central</option>
+                  <option value="South">South</option>
+                </select>
+              </td>
+              <td>
+                <select class="procurement-select">
+                  <option value="">-- Select Mode --</option>
+                  <option value="Sec27">Sec. 27 – Competitive Bidding</option>
+                  <option value="Sec31">Sec. 31 – Direct Contracting</option>
+                  <option value="Sec32">Sec. 32 – Direct Acquisition</option>
+                  <option value="Sec33">Sec. 33 – Repeat Order</option>
+                  <option value="Sec34">Sec. 34 – Small Value Procurement</option>
+                </select>
+              </td>
+              <td>
+               <select class="processor-select">
+  <option value="">-- Select Processor --</option>
+</select>
+
+              </td>
+              <td>
+                <select class="status-select">
+                  <option value="">-- Status --</option>
+                  <option value="Ongoing">Ongoing</option>  
+                  <option value="RTS">RTS</option>
+                  <option value="Completed">Completed</option>
+                </select>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="export-buttons">
+          <button class="btn btn-success" onclick="exportToExcel()">Save to Excel</button>
+          <button class="btn btn-danger" onclick="exportToPDF()">Save to PDF</button>
+          <button class="btn btn-info" onclick="exportToCSV()">Save to CSV</button>
+          <button class="btn-sv-info" onclick="saveTable()">Save Table</button>
+          <button class="btn-sv-info" onclick="loadTable()">Load Table</button>
+          <button id="addRowBtn">+</button>
+          <button id="deleteRowBtn">-</button>
+          <button class="btn btn-info" onclick="openProcessorManager()">Manage Processors</button>
+          <button onclick="window.location.href='recent_project.html'">View Recent Projects</button>
+          <button class="btn btn-success" onclick="saveProject()"> Save Project</button>
+
+        </div>
+      </div>
+    </main>
+
+  
+
+    <!-- Paper Size Modal -->
+    <div id="paperSizeModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">Select Paper Size for PDF</div>
+        <div class="paper-size-group">
+          <label><input type="radio" name="paperSize" value="a4" checked> A4 (210 × 297 mm)</label>
+          <label><input type="radio" name="paperSize" value="letter"> Letter (8.5 × 11 in)</label>
+          <label><input type="radio" name="paperSize" value="legal"> Legal (8.5 × 14 in)</label>
+          <label><input type="radio" name="paperSize" value="a3"> A3 (297 × 420 mm)</label>
+          <label><input type="radio" name="paperSize" value="a5"> A5 (148 × 210 mm)</label>
+          <label><input type="radio" name="paperSize" value="tabloid"> Tabloid (11 × 17 in)</label>
+        </div>
+        <div class="modal-buttons">
+          <button class="btn-cancel" onclick="closePaperSizeDialog()">Cancel</button>
+          <button class="btn-confirm" onclick="confirmPaperSizeAndExport()">Export PDF</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script>
+  // Global storage key and variables
+  const STORAGE_KEY = "PR_TABLE_DATA";
+  const PR_RFQ_TAT_KEY = "PR_RFQ_TAT_DATA";
+  const tbody = document.querySelector("tbody");
+  const addRowBtn = document.getElementById("addRowBtn");
+  const searchInput = document.getElementById("tableSearch");
+  let undoStack = [];
+  let clipboard = null;
+  const MAX_UNDO = 50;
+
+  /* =========================
+    SAVE TABLE DATA
+  ========================= */
+  function saveTableData() {
+    const rows = [];
+    tbody.querySelectorAll("tr").forEach(row => {
+      const data = {
+        inputs: [...row.querySelectorAll("input")].map(i => i.value),
+        selects: [...row.querySelectorAll("select")].map(s => s.selectedIndex)
+      };
+      rows.push(data);
+    });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(rows));
+  }
+
+  /* =========================
+    LOAD TABLE DATA
+  ========================= */
+  function loadTableData() {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (!saved) return;
+    
+    const rows = JSON.parse(saved);
+    
+    // Clear existing rows except the first
+    tbody.querySelectorAll("tr:not(.main-row)").forEach(r => r.remove());
+    
+    // Restore first row  
+    const firstRow = tbody.querySelector(".main-row");
+    if (rows.length > 0) {
+      const firstInputs = firstRow.querySelectorAll("input");
+      const firstSelects = firstRow.querySelectorAll("select");
+      rows[0].inputs.forEach((val, idx) => {
+        if (firstInputs[idx]) firstInputs[idx].value = val;
+      });
+      rows[0].selects.forEach((idx, i) => {
+        if (firstSelects[i]) firstSelects[i].selectedIndex = idx;
+      });
+      const officeSelect = firstRow.querySelector(".office-select");
+      if (officeSelect && officeSelect.value) {
+        updateEndUser(officeSelect);
+      }
+      // Trigger processor update for first row
+      const abcInput = firstRow.querySelector("input[placeholder='ABC']");
+      if (abcInput) {
+        abcInput.dispatchEvent(new Event("input", { bubbles: true }));
+      }
+    }
+
+    // Restore additional rows
+    for (let i = 1; i < rows.length; i++) {
+      const row = getTemplateRow();
+      const inputs = row.querySelectorAll("input");
+      const selects = row.querySelectorAll("select");
+      
+      rows[i].inputs.forEach((val, idx) => {
+        if (inputs[idx]) inputs[idx].value = val;
+      });
+      rows[i].selects.forEach((idx, j) => {
+        if (selects[j]) selects[j].selectedIndex = idx;
+      });
+      
+      tbody.appendChild(row);
+      const officeSelect = row.querySelector(".office-select");
+      if (officeSelect) {
+        officeSelect.onchange = function() {
+          updateEndUser(this);
+        };
+        if (officeSelect.value) {
+          updateEndUser(officeSelect);
+        }
+      }
+      // Trigger processor update for additional rows
+      const abcInput = row.querySelector("input[placeholder='ABC']");
+      if (abcInput) {
+        abcInput.dispatchEvent(new Event("input", { bubbles: true }));
+      }
+    }
+  }
+
+  /* =========================
+    SAVE TABLE (Button function)
+  ========================= */
+  function saveTable() {
+    const confirm_save = confirm("Are you sure you want to save the table data? This will overwrite any previously saved data.");
+    if (confirm_save) {
+      saveTableData();
+      alert("Table data saved successfully!");
+    }
+  }
+
+  /* =========================
+    LOAD TABLE (Button function)
+  ========================= */
+  function loadTable() {
+    loadTableData();
+    alert("Table data loaded successfully!");
+  }
+
+
+  /* =========================
+    ROW TEMPLATE
+  ========================= */
+  function getTemplateRow() {
+    return document.querySelector(".main-row").cloneNode(true);
+  }
+
+  /* =========================
+    ADD ROW
+  ========================= */
+  function addRow(focus = true) {
+    saveState();
+    const row = getTemplateRow();
+    row.querySelectorAll("input").forEach(i => i.value = "");
+    row.querySelectorAll("select").forEach(s => s.selectedIndex = 0);
+    
+    // Reattach the office select change listener for the new row
+    const officeSelect = row.querySelector(".office-select");
+    if (officeSelect) {
+      officeSelect.onchange = function () {
+        updateEndUser(this);
+      };
+    }
+    
+    tbody.appendChild(row);
+    if (focus) row.querySelector("input, select")?.focus();
+    saveTableData();
+  }
+
+  // Attach to + button
+  if (addRowBtn) addRowBtn.onclick = () => addRow();
+  function saveState() {
+    const snapshot = [...tbody.rows].map(r => ({
+      inputs: [...r.querySelectorAll("input")].map(i => i.value),
+      selects: [...r.querySelectorAll("select")].map(s => s.selectedIndex)
+    }));
+    undoStack.push(snapshot);
+    if (undoStack.length > MAX_UNDO) undoStack.shift();
+  }
+
+  function restoreState(state) {
+    tbody.innerHTML = "";
+    state.forEach(data => {
+      const row = getTemplateRow();
+      row.querySelectorAll("input").forEach((i, idx) => i.value = data.inputs[idx] || "");
+      row.querySelectorAll("select").forEach((s, idx) => s.selectedIndex = data.selects[idx] || 0);
+      tbody.appendChild(row);
+    });
+    saveTableData();
+  }
+
+  /* =========================
+    ARROW KEY NAVIGATION
+  ========================= */
+  function moveFocus(el, key) {
+    const row = el.closest("tr");
+    const cells = [...row.querySelectorAll("input, select")];
+    const index = cells.indexOf(el);
+
+    let target;
+    if (key === "ArrowRight") target = cells[index + 1];
+    if (key === "ArrowLeft") target = cells[index - 1];
+    if (key === "ArrowDown") {
+      const next = row.nextElementSibling;
+      target = next?.querySelectorAll("input, select")[index];
+    }
+    if (key === "ArrowUp") {
+      const prev = row.previousElementSibling;
+      target = prev?.querySelectorAll("input, select")[index];
+    }
+
+    if (target) {
+      target.focus();
+      if (target.tagName === "INPUT") target.select();
+    }
+  }
+
+  /* =========================
+    SEARCH FILTER
+  ========================= */
+  searchInput.addEventListener("input", () => {
+    const q = searchInput.value.toLowerCase();
+    [...tbody.rows].forEach(row => {
+      const match = row.innerText.toLowerCase().includes(q);
+      row.style.display = match ? "" : "none";
+    });
+  });
+
+  /* =========================
+    KEYBOARD SHORTCUTS
+  ========================= */
+  document.addEventListener("keydown", e => {
+    const active = document.activeElement;
+    const isField = active && (active.tagName === "INPUT" || active.tagName === "SELECT");
+
+    /* Ctrl shortcuts */
+    if (e.ctrlKey) {
+      const key = e.key.toLowerCase();
+
+      if (key === "f") {
+        e.preventDefault();
+        addRow();
+      }
+
+      if (key === "c" && isField) {
+        e.preventDefault();
+        const row = active.closest("tr");
+        clipboard = {
+          inputs: [...row.querySelectorAll("input")].map(i => i.value),
+          selects: [...row.querySelectorAll("select")].map(s => s.selectedIndex)
+        };
+      }
+
+      if (key === "v" && clipboard) {
+        e.preventDefault();
+        saveState();
+        const row = getTemplateRow();
+        row.querySelectorAll("input").forEach((i, idx) => i.value = clipboard.inputs[idx] || "");
+        row.querySelectorAll("select").forEach((s, idx) => s.selectedIndex = clipboard.selects[idx] || 0);
+        tbody.appendChild(row);
+        saveTableData();
+      }
+
+      if (key === "z") {
+        e.preventDefault();
+        if (undoStack.length) restoreState(undoStack.pop());
+      }
+      return;
+    }
+
+    /* Arrow navigation */
+    if (isField && ["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].includes(e.key)) {
+      e.preventDefault();
+      moveFocus(active, e.key);
+    }
+  });
+
+  /* =========================
+    MANUAL SAVE/LOAD ONLY
+  ========================= */
+  document.addEventListener("change", (e) => {
+    // Save PR_DateReceived to localStorage whenever any date-received field changes for RFQ TAT
+    if (e.target.classList.contains("date-received")) {
+      const dateValue = e.target.value;
+      localStorage.setItem("PR_DateReceived", dateValue);
+      console.log("PR Date Saved:", dateValue);
+      // Notify RFQ page about the update
+      window.dispatchEvent(new CustomEvent("prDateChanged", { detail: { date: dateValue } }));
+    }
+  });
+
+  /* =========================
+    OFFICE TO END USER MAPPING
+  ========================= */
+  const officeEndUserMap = {
+  OVP: [
+    "OVP",
+    "ITMU",
+    "LEGAL",
+    "HCDMD",
+    "PAU",
+    "MSD",
+    "MRMU",
+    "PSMU",
+    "FMS",
+    "CASHIERING",
+    "SBACK"
+  ],
+  North: [
+    "BRANCH",
+    "LHIO CALOOCAN",
+    "LHIO MANDALUYONG",
+    "LHIO MANILA",
+    "LHIO DMW OFP",
+    "LHIO VALENZUELA"
+  ],
+  Central: [
+    "BRANCH",
+    "LHIO QUEZON CITY",
+    "LHIO FAIRVIEW",
+    "LHIO RIZAL"
+  ],
+  South: [
+    "BRANCH",
+    "LHIO MAKATI",
+    "LHIO PASIG",
+    "LHIO LAS PIÑAS",
+    "LHIO PARAÑAQUE",
+    "GLOBAL SATELLITE OFFICE"
+  ]
+};
+
+
+  /* =========================
+    UPDATE END USER BASED ON OFFICE
+  ========================= */
+  function updateEndUser(officeSelect) {
+  const row = officeSelect.closest("tr");
+  const endUserSelect = row.querySelector(".enduser-select");
+  const selectedOffice = officeSelect.value;
+
+  // reset end user
+  endUserSelect.innerHTML = '<option value="">-- Select End User --</option>';
+
+  if (!officeEndUserMap[selectedOffice]) return;
+
+  officeEndUserMap[selectedOffice].forEach(user => {
+    const option = document.createElement("option");
+    option.value = user;
+    option.textContent = user;
+    endUserSelect.appendChild(option);
+  });
+}
+
+  /* =========================
+    PAGE LOAD
+  ========================= */
+  document.addEventListener("DOMContentLoaded", () => {
+    // Reattach listeners to initial row
+    const initialRow = tbody.querySelector(".main-row");
+    const officeSelect = initialRow.querySelector(".office-select");
+    officeSelect.onchange = function() {
+      updateEndUser(this);
+    };
+  });
+
+  /* =========================
+    SAVE BEFORE LEAVING PAGE
+  ========================= */
+  // Removed auto-save on page unload - user must manually save
+
+  /* =========================
+    EXPORT FUNCTIONS
+  ========================= */
+  function exportToExcel() {
+    const table = document.querySelector("table");
+    const rows = table.querySelectorAll("tr");
+    const data = [];
+
+    rows.forEach((row, rowIndex) => {
+      const rowData = [];
+      const cells = row.querySelectorAll("th, td");
+
+      cells.forEach(cell => {
+        const input = cell.querySelector("input");
+        const select = cell.querySelector("select");
+
+        if (input) {
+          rowData.push(input.value);
+        } else if (select) {
+          // export selected text, not index
+          rowData.push(select.options[select.selectedIndex]?.text || "");
+        } else {
+          rowData.push(cell.innerText.trim());
+        }
+      });
+
+      data.push(rowData);
+    });
+
+    // Create worksheet from array-of-arrays
+    const worksheet = XLSX.utils.aoa_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Purchase Request");
+
+    const filename = `purchase_request_${new Date()
+      .toISOString()
+      .split("T")[0]}.xlsx`;
+
+    XLSX.writeFile(workbook, filename);
+  }
+
+  function exportToCSV() {
+    const table = document.querySelector("table");
+    const csv = [];
+    const rows = table.querySelectorAll("tr");
+    
+    rows.forEach(row => {
+      const cols = row.querySelectorAll("td, th");
+      const csvRow = [];
+      cols.forEach(col => {
+        const input = col.querySelector("input, select");
+        csvRow.push(input ? input.value : col.textContent.trim());
+      });
+      csv.push(csvRow.join(","));
+    });
+    
+    const filename = `purchase_request_${new Date().toISOString().split("T")[0]}.csv`;
+    const link = document.createElement("a");
+    link.href = "data:text/csv;charset=utf-8," + encodeURIComponent(csv.join("\n"));
+    link.download = filename;
+    link.click();
+  }
+
+  function exportToPDF() {
+    document.getElementById("paperSizeModal").style.display = "block";
+  }
+
+  function closePaperSizeDialog() {
+    document.getElementById("paperSizeModal").style.display = "none";
+  }
+
+  </script>
+  <script>
+  function confirmPaperSizeAndExport() {
+    const selected = document.querySelector('input[name="paperSize"]:checked').value;
+
+    // jsPDF-safe page size mapping (mm)
+    const pageSizes = {
+      a4: "a4",
+      letter: "letter",
+      legal: "legal",
+      a3: [420, 297],      // A3 landscape
+      a5: [210, 148],      // A5 landscape
+      tabloid: [432, 279]  // Tabloid landscape
+    };
+
+    const format = pageSizes[selected] || "a4";
+
+    closePaperSizeDialog();
+    
+
+    const element = document.querySelector("table");
+
+    const opt = {
+      margin: 10,
+      filename: `purchase_request_${new Date().toISOString().split("T")[0]}.pdf`,
+      image: { type: "jpeg", quality: 0.98 },
+      html2canvas: {
+        scale: 2,
+        scrollX: 0,
+        scrollY: 0
+      },
+      jsPDF: {
+        unit: "mm",
+        format: format,
+        orientation: "landscape"
+      }
+    };
+
+    html2pdf().set(opt).from(element).save();
+  }
+
+  /* =========================
+   ABC → PROCESSOR LOGIC
+========================= */
+const STORAGE_PROC_KEY = "processorConfig";
+
+function getProcessors() {
+  return JSON.parse(localStorage.getItem(STORAGE_PROC_KEY)) || {
+    low: ["Ofelia", "Jeorge", "Jerve", "Jennie"],
+    high: ["Jowaida", "Janie", "Alex", "Aleli"]
+  };
+}
+
+function saveProcessors(data) {
+  localStorage.setItem(STORAGE_PROC_KEY, JSON.stringify(data));
+}
+
+
+document.addEventListener("input", (e) => {
+  const input = e.target;
+
+  // Only react to ABC column (number input)
+  if (
+    input.tagName !== "INPUT" ||
+    input.type !== "number" ||
+    input.placeholder !== "ABC"
+  ) return;
+
+  const row = input.closest("tr");
+  if (!row) return;
+
+  const processorSelect = row.querySelector(".processor-select");
+  if (!processorSelect) return;
+
+  const abcValue = parseFloat(input.value);
+
+  // Reset dropdown
+  processorSelect.innerHTML =
+    '<option value="">-- Select Processor --</option>';
+
+  if (isNaN(abcValue)) return;
+
+ const processors = getProcessors();
+const list = abcValue < 2000001 ? processors.low : processors.high;
+
+  list.forEach(name => {
+    const opt = document.createElement("option");
+    opt.value = name;
+    opt.textContent = name;
+    processorSelect.appendChild(opt);
+  });
+});
+
+
+  </script>
+
+  <script>
+function openProcessorManager() {
+  document.getElementById("processorModal").style.display = "block";
+  renderProcessorLists();
+}
+
+function closeProcessorManager() {
+  document.getElementById("processorModal").style.display = "none";
+}
+
+function renderProcessorLists() {
+  const data = getProcessors();
+  const lowList = document.getElementById("lowList");
+  const highList = document.getElementById("highList");
+
+  lowList.innerHTML = "";
+  highList.innerHTML = "";
+
+  data.low.forEach((name, index) => {
+    lowList.innerHTML += `
+      <li>
+        ${name}
+        <button onclick="removeProcessor('low', ${index})">❌</button>
+      </li>
+    `;
+  });
+
+  data.high.forEach((name, index) => {
+    highList.innerHTML += `
+      <li>
+        ${name}
+        <button onclick="removeProcessor('high', ${index})">❌</button>
+      </li>
+    `;
+  });
+}
+
+function addProcessor() {
+  const nameInput = document.getElementById("procName");
+  const category = document.getElementById("procCategory").value;
+  const name = nameInput.value.trim();
+
+  if (!name) {
+    alert("Please enter a processor name");
+    return;
+  }
+
+  const data = getProcessors();
+
+  if (data[category].includes(name)) {
+    alert("Processor already exists");
+    return;
+  }
+
+  data[category].push(name);
+  saveProcessors(data);
+
+  nameInput.value = "";
+  renderProcessorLists();
+}
+
+function removeProcessor(category, index) {
+  const data = getProcessors();
+  data[category].splice(index, 1);
+  saveProcessors(data);
+  renderProcessorLists();
+}
+
+/* ===== DELETE ROW ===== */
+function deleteLastRow() {
+  const tbody = document.querySelector("tbody");
+  const rows = tbody.querySelectorAll("tr");
+
+  // Prevent deleting the last remaining row
+  if (rows.length <= 1) {
+    alert("At least one row must remain in the table.");
+    return;
+  }
+
+  // Confirm before deleting
+  const confirm_delete = confirm("Are you sure you want to delete the last row? This action cannot be undone.");
+  if (confirm_delete) {
+    tbody.removeChild(rows[rows.length - 1]);
+    alert("Row deleted successfully!");
+  }
+}
+
+// Attach to the "-" button
+document.getElementById("deleteRowBtn").onclick = deleteLastRow;
+
+</script>
+
+<script>
+  // Turn Around Time (TAT) Data Storage
+  const PR_TAT_KEY = "PR_TAT_DATA";
+
+/*
+  Structure saved in localStorage:
+
+  {
+    "PR-001": { dateReceived: "2026-01-28" },
+    "PR-002": { dateReceived: "2026-01-29" }
+  }
+*/
+
+document.addEventListener("change", (e) => {
+  if (
+    !e.target.classList.contains("control-no") &&
+    !e.target.classList.contains("date-received")
+  ) return;
+
+  const row = e.target.closest("tr");
+  if (!row) return;
+
+  const controlNo = row.querySelector(".control-no")?.value.trim();
+  const dateReceived = row.querySelector(".date-received")?.value;
+
+  if (!controlNo || !dateReceived) return;
+
+  const data =
+    JSON.parse(localStorage.getItem(PR_TAT_KEY)) || {};
+
+  data[controlNo] = {
+    ...(data[controlNo] || {}),
+    dateReceived
+  };
+
+  localStorage.setItem(PR_TAT_KEY, JSON.stringify(data));
+});
+</script>
+
+<script>
+  //TAT - Date Received Listener
+document.getElementById("prDateReceived").addEventListener("change", function () {
+  localStorage.setItem("PR_DateReceived", this.value);
+});
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  // Determine page type (PR or RFQ)
+  const pageType = location.pathname.includes("request_for_qoutation") ? "RFQ" : "PR";
+  const STORAGE_KEY = pageType + "_TAT_DATA";
+
+  const tbody = document.querySelector("tbody");
+
+  // Load saved TAT on page load
+  const savedData = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+  tbody.querySelectorAll("tr").forEach(row => {
+    const controlNo = row.querySelector(".control-no")?.value.trim();
+    const dateInput = row.querySelector(".date-received");
+    if (controlNo && savedData[controlNo] && dateInput) {
+      dateInput.value = savedData[controlNo].dateReceived;
+    }
+  });
+
+  // Save TAT on change
+  tbody.addEventListener("change", (e) => {
+    if (!e.target.classList.contains("control-no") && !e.target.classList.contains("date-received")) return;
+
+    const row = e.target.closest("tr");
+    if (!row) return;
+
+    const controlNo = row.querySelector(".control-no")?.value.trim();
+    const dateReceived = row.querySelector(".date-received")?.value;
+
+    if (!controlNo || !dateReceived) return;
+
+    const data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+    data[controlNo] = { dateReceived };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  });
+});
+
+// Key to store recent projects
+const RECENT_PROJECTS_KEY = "recentProjects";
+
+// Add project to recent projects
+function addToRecentProjects(projectName) {
+  let projects = JSON.parse(localStorage.getItem(RECENT_PROJECTS_KEY)) || [];
+
+  // Add new project at the top
+  projects.unshift({
+    name: projectName,
+    date: new Date().toLocaleString()
+  });
+
+  // Keep only last 10 projects
+  if (projects.length > 10) projects.pop();
+
+  localStorage.setItem(RECENT_PROJECTS_KEY, JSON.stringify(projects));
+}
+
+// Save Project Button Function
+function saveProject() {
+  const projectName = prompt("Enter Project Name", `Purchase_Request_${new Date().toISOString().split("T")[0]}`);
+  if (!projectName) return;
+
+  // Save table data first
+  saveTableData(); // ✅ ensures the table is saved in localStorage
+
+  // Add project to recent
+  addToRecentProjects(projectName);
+
+  alert(`Project "${projectName}" has been saved and added to Recent Projects.`);
+}
+// Key to store recent files
+const RECENT_FILES_KEY = "recentFiles";
+
+// Save a recent file
+function addToRecent(filename) {
+  let recentFiles = JSON.parse(localStorage.getItem(RECENT_FILES_KEY)) || [];
+  
+  // Add new file at the top
+  recentFiles.unshift({
+    name: filename,
+    date: new Date().toLocaleString()
+  });
+
+  // Keep only last 10 files
+  if (recentFiles.length > 10) recentFiles.pop();
+
+  localStorage.setItem(RECENT_FILES_KEY, JSON.stringify(recentFiles));
+}
+
+// Modify your save/export functions to add recent file
+
+function exportToExcel() {
+  const table = document.querySelector("table");
+  const rows = table.querySelectorAll("tr");
+  const data = [];
+
+  rows.forEach((row) => {
+    const rowData = [];
+    const cells = row.querySelectorAll("th, td");
+    cells.forEach(cell => {
+      const input = cell.querySelector("input");
+      const select = cell.querySelector("select");
+      if (input) rowData.push(input.value);
+      else if (select) rowData.push(select.options[select.selectedIndex]?.text || "");
+      else rowData.push(cell.innerText.trim());
+    });
+    data.push(rowData);
+  });
+
+  const worksheet = XLSX.utils.aoa_to_sheet(data);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Purchase Request");
+
+  const filename = `purchase_request_${new Date().toISOString().split("T")[0]}.xlsx`;
+  XLSX.writeFile(workbook, filename);
+
+  addToRecent(filename); // ✅ Add to recent
+}
+
+function exportToCSV() {
+  const table = document.querySelector("table");
+  const csv = [];
+  const rows = table.querySelectorAll("tr");
+
+  rows.forEach(row => {
+    const cols = row.querySelectorAll("td, th");
+    const csvRow = [];
+    cols.forEach(col => {
+      const input = col.querySelector("input, select");
+      csvRow.push(input ? input.value : col.textContent.trim());
+    });
+    csv.push(csvRow.join(","));
+  });
+
+  const filename = `purchase_request_${new Date().toISOString().split("T")[0]}.csv`;
+  const link = document.createElement("a");
+  link.href = "data:text/csv;charset=utf-8," + encodeURIComponent(csv.join("\n"));
+  link.download = filename;
+  link.click();
+
+  addToRecent(filename); // ✅ Add to recent
+}
+
+function confirmPaperSizeAndExport() {
+  const selected = document.querySelector('input[name="paperSize"]:checked').value;
+  const pageSizes = { a4: "a4", letter: "letter", legal: "legal", a3: [420,297], a5:[210,148], tabloid:[432,279] };
+  const format = pageSizes[selected] || "a4";
+  closePaperSizeDialog();
+
+  const element = document.querySelector("table");
+  const opt = {
+    margin: 10,
+    filename: `purchase_request_${new Date().toISOString().split("T")[0]}.pdf`,
+    image: { type: "jpeg", quality: 0.98 },
+    html2canvas: { scale: 2, scrollX:0, scrollY:0 },
+    jsPDF: { unit:"mm", format:format, orientation:"landscape" }
+  };
+
+  html2pdf().set(opt).from(element).save()
+    .then(() => addToRecent(opt.filename)); // ✅ Add PDF to recent
+}
+
+
+</script>
+
+
+
+<div id="processorModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">Manage Processors</div>
+
+    <label>Processor Name</label>
+    <input id="procName" type="text" style="width:100%; margin-bottom:8px;">
+
+    <label>ABC Category</label>
+    <select id="procCategory" style="width:100%; margin-bottom:10px;">
+      <option value="low">Below 2,000,000</option>
+      <option value="high">2,000,000 & Above</option>
+    </select>
+    <button class="btn btn-success" onclick="addProcessor()">Add Processor</button>
+
+    <hr>
+
+    <div>
+      <strong>Below 2M (PROCUREMENT)</strong>
+      <ul id="lowList"></ul>
+
+      <strong>2M & Above (SBAC)</strong>
+      <ul id="highList"></ul>
+    </div>
+
+    <div class="modal-buttons">
+      <button class="btn-cancel" onclick="closeProcessorManager()">Close</button>
+    </div>
+  </div>
+</div>
+
+
+  </body>
+  </html>

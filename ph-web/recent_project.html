@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<button onclick="goBack()" style="
+  margin-bottom:15px;
+  background:#ccc;
+  color:#333;
+">
+  ⬅ Back
+</button>
+
+<h2>Recent Projects</h2>
+
+<style>
+  body { font-family: Arial, sans-serif; background: #f6fbf3; padding: 20px; }
+  h2 { color: #5aa300; margin-bottom: 15px; }
+  ul { list-style: none; padding: 0; }
+  li { 
+    background: #fff; 
+    margin: 8px 0; 
+    padding: 10px; 
+    border-radius: 8px; 
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+    transition: transform 0.2s;
+  }
+  li:hover { transform: translateX(5px); }
+  button { 
+    padding: 5px 10px; 
+    border: none; 
+    background: #5aa300; 
+    color: #fff; 
+    cursor: pointer; 
+    border-radius: 4px; 
+    margin-left: 8px;
+  }
+  .project-name { cursor: pointer; flex: 1; }
+  .empty { text-align: center; color: #888; }
+</style>
+</head>
+<body>
+
+<ul id="recentProjectsList"></ul>
+<button onclick="clearRecentProjects()">Clear All</button>
+
+<script>
+
+  function goBack() {
+  window.history.back();
+}
+
+function loadRecentProjects() {
+  const projects = JSON.parse(localStorage.getItem("recentProjects")) || [];
+  const list = document.getElementById("recentProjectsList");
+  list.innerHTML = "";
+
+  if (projects.length === 0) {
+    list.innerHTML = "<li class='empty'>No recent projects found.</li>";
+    return;
+  }
+
+  projects.forEach((project, index) => {
+    const li = document.createElement("li");
+
+    // Clickable project name
+    const nameSpan = document.createElement("span");
+    nameSpan.textContent = project.name;
+    nameSpan.className = "project-name";
+    nameSpan.onclick = () => viewProject(project);
+
+    const dateSpan = document.createElement("span");
+    dateSpan.textContent = project.date;
+
+    // Optional: add delete button per project
+    const deleteBtn = document.createElement("button");
+    deleteBtn.textContent = "Delete";
+    deleteBtn.onclick = () => removeProject(index);
+
+    li.appendChild(nameSpan);
+    li.appendChild(dateSpan);
+    li.appendChild(deleteBtn);
+    list.appendChild(li);
+  });
+}
+
+// Show project details
+function viewProject(project) {
+  alert(`Project Name: ${project.name}\nSaved on: ${project.date}`);
+  // Optional: You can also navigate to a page or load saved data here
+}
+
+// Delete single project
+function removeProject(index) {
+  const projects = JSON.parse(localStorage.getItem("recentProjects")) || [];
+  projects.splice(index, 1);
+  localStorage.setItem("recentProjects", JSON.stringify(projects));
+  loadRecentProjects();
+}
+
+function clearRecentProjects() {
+  if (confirm("Clear all recent projects?")) {
+    localStorage.removeItem("recentProjects");
+    loadRecentProjects();
+  }
+}
+
+document.addEventListener("DOMContentLoaded", loadRecentProjects);
+</script>
+
+</body>
+</html>

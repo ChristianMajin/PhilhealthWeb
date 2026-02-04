@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Procurement Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+        background-color: #f9f9f9;
+        color: #333;
+    }
+
+    .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    /* Header & Navbar */
+ .header {
+    display: flex;
+    align-items: center;
+    background-color: #8fe04e;
+    padding: 10px 20px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+  .logo {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    padding: 5px 10px;
+    border-radius: 30px;
+    margin-right: 30px; /* space between logo and nav */
+}
+
+    .logo img { height: 40px; margin-right: 8px; }
+    .logo span { font-weight: bold; font-size: 14px; }
+
+.nav {
+    display: flex;
+    gap: 20px;
+    font-weight: bold;
+    font-size: 14px;
+    position: relative;
+}
+
+/* Navbar links style */
+.nav a {
+    text-decoration: none;
+    color: #000;
+    padding: 5px 0;
+    position: relative;
+    transition: color 0.3s ease;
+}
+
+/* Underline animation on hover */
+.nav a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 100;
+    height: 2px;
+    background-color: #000000; /* underline color for active hover */
+    transition: width 0.3s ease;
+}
+
+.nav a:hover::after {
+    width: 100%;
+}
+
+/* Active link highlight */
+ .nav a.active {
+    color: #000;                  /* text color */
+    background-color: #c5f2b5;    /* highlight background */
+    padding: 5px 12px;
+    border-radius: 6px;
+  }
+
+
+
+  .admin-label {
+    font-weight: bold;
+    font-size: 14px;
+    color: #000;
+    margin-left: auto; /* pushes it to the far right */
+    background-color: #fff;
+    padding: 5px 10px;
+    border-radius: 20px;
+}
+
+    /* Metrics Section */
+    .metrics-section {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 15px;
+        margin-bottom: 40px;
+    }
+
+    .metric-card {
+        background: #fff;
+        border-radius: 8px;
+        padding: 15px;
+        border-left: 4px solid #8fe04e;
+        transition: transform 0.2s ease;
+    }
+
+    .metric-card:hover {
+        transform: translateY(-2px);
+    }
+
+    .metric-icon { font-size: 2em; margin-bottom: 8px; }
+    .metric-label { color: #666; font-size: 0.85em; margin-bottom: 5px; }
+    .metric-value { font-size: 1.7em; font-weight: bold; color: #333; margin-bottom: 8px; }
+    .metric-row { display: flex; justify-content: space-between; font-size: 0.85em; color: #555; }
+
+    /* Charts Section */
+    .charts-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 25px;
+        margin-bottom: 40px;
+    }
+
+    .chart-card {
+        background: #fff;
+        border-radius: 10px;
+        padding: 20px;
+    }
+
+    .chart-card h3 {
+        color: #333;
+        margin-bottom: 15px;
+        font-size: 1.2em;
+        border-bottom: 1px solid #8fe04e;
+        padding-bottom: 5px;
+    }
+
+    .chart-wrapper { height: 250px; }
+
+    /* Progress Indicators */
+    .progress-card {
+        background: #fff;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 30px;
+    }
+
+    .progress-card h3 {
+        color: #333;
+        margin-bottom: 15px;
+        font-size: 1.2em;
+        border-bottom: 1px solid #8fe04e;
+        padding-bottom: 5px;
+    }
+
+    .progress-item {
+        margin-bottom: 15px;
+    }
+
+    .progress-header { display: flex; justify-content: space-between; margin-bottom: 5px; }
+    .progress-label { font-weight: 600; }
+    .progress-percent { color: #8fe04e; font-weight: 600; }
+    .progress-bar {
+        width: 100%;
+        height: 8px;
+        background: #e0e0e0;
+        border-radius: 5px;
+        overflow: hidden;
+    }
+
+    .progress-fill {
+        height: 100%;
+        background: #8fe04e;
+        transition: width 0.3s ease;
+    }
+
+    /* Tables */
+    .table-card {
+        background: #fff;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 30px;
+        overflow-x: auto;
+    }
+
+    .table-card h3 {
+        font-size: 1.2em;
+        margin-bottom: 15px;
+        border-bottom: 1px solid #8fe04e;
+        padding-bottom: 5px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+    }
+
+    thead th {
+        border-bottom: 1px solid #ccc;
+        padding: 6px;
+        text-align: left;
+        font-weight: 600;
+    }
+
+    tbody td {
+        padding: 4px 6px;
+        border-bottom: 1px solid #eee;
+        color: #333;
+    }
+
+    tbody tr:hover { background: #f1f1f1; }
+
+    .number-cell, .currency-cell { font-weight: 600; color: #8fe04e; }
+
+    /* Tasks / Category Section */
+    .category { background: #fff; padding: 25px; border-radius: 8px; margin-bottom: 40px; }
+    .category h2 { color: #8fe04e; font-size: 1.5em; margin-bottom: 20px; border-bottom: 2px solid #8fe04e; padding-bottom: 5px; }
+
+    .category-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+
+    .task-card {
+        background: #f9f9f9;
+        border-radius: 6px;
+        padding: 15px;
+        text-decoration: none;
+        color: inherit;
+        display: flex;
+        flex-direction: column;
+        border-left: 4px solid #8fe04e;
+        transition: transform 0.2s ease;
+    }
+
+    .task-card:hover { transform: translateY(-2px); }
+
+    .task-icon { font-size: 2em; margin-bottom: 10px; }
+    .task-card h3 { font-size: 1.2em; color: #333; margin-bottom: 8px; }
+    .task-card p { font-size: 0.9em; color: #555; flex-grow: 1; margin-bottom: 10px; }
+    .task-card .status { display: inline-block; background: #8fe04e; color: #fff; padding: 5px 12px; border-radius: 15px; font-size: 0.8em; font-weight: 600; }
+
+    /* Footer */
+    .footer {
+        background-color: #8fe04e;
+        text-align: center;
+        padding: 10px;
+        font-weight: bold;
+        margin-top: 40px;
+        font-size: 0.9em;
+    }
+
+    @media (max-width: 768px) {
+        .metrics-section,
+        .charts-container,
+        .category-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .chart-wrapper { height: 200px; }
+
+  
+
+.logout-btn {
+  margin-left: 10px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  color: #000;
+  border: 1px solid #000;
+  border-radius: 12px;
+  background: transparent;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.logout-btn:hover {
+  background: #000;
+  color: #fff;
+}
+
+    }
+</style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="logo">
+      <img src="https://www.parfait.com.ph/images/product-icon/philhealth-icon.png" alt="PhilHealth Logo">
+      <span>PhilHealth<br><small>Your Partner in Health</small></span>
+    </div>
+    <nav class="nav">
+      <a href="dashboard.html" class="active">DASHBOARD</a>
+      <a href="purchase_request.html">PURCHASE REQUEST</a>
+      <a href="request_for_qoutation.html">REQUEST FOR QUOTATION</a>
+      <a href="philgeps_posting.html">PHILGEPS POSTING OF RFQ</a>
+      <a href="notice_of_award.html">NOTICE OF AWARD</a>
+      <a href="contract.html">CONTRACT</a>
+      <a href="supplier_directory.html">SUPPLIER DIRECTORY</a>
+      <a href="history.html">HISTORY</a>
+    </nav>
+ <div class="admin-label">
+  ADMIN
+  <a href="login.html" class="logout-btn">Logout</a>
+</div>
+
+  </div>
+
+  <div class="container">
+
+        <!-- Key Metrics -->
+        <div class="metrics-section">
+            <div class="metric-card">
+                <div class="metric-icon">📋</div>
+                <div class="metric-label">PRs Received</div>
+                <div class="metric-value">14</div>
+                <div class="metric-row">
+                    <span>Budget: ₱2.8M</span>
+                    <span>↑ +20%</span>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-icon">✅</div>
+                <div class="metric-label">Completed</div>
+                <div class="metric-value">10</div>
+                <div class="metric-row">
+                    <span>Amount: ₱2.24M</span>
+                    <span>↑ +15%</span>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-icon">💰</div>
+                <div class="metric-label">Total Savings</div>
+                <div class="metric-value">₱143.5K</div>
+                <div class="metric-row">
+                    <span>Average: ₱14,350</span>
+                    <span>↑ +5%</span>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-icon">📈</div>
+                <div class="metric-label">Completion Rate</div>
+                <div class="metric-value">71.43%</div>
+                <div class="metric-row">
+                    <span>Target: 80%</span>
+                    <span>↓ -8.57%</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="charts-container">
+            <div class="chart-card">
+                <h3>📊 Office Performance</h3>
+                <div class="chart-wrapper">
+                    <canvas id="officeChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <h3>💹 Budget Allocation</h3>
+                <div class="chart-wrapper">
+                    <canvas id="budgetChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Progress Indicators -->
+        <div class="progress-card">
+            <h3>📍 Office Progress Tracking</h3>
+            
+            <div class="progress-item">
+                <div class="progress-header">
+                    <span class="progress-label">OVP Office</span>
+                    <span class="progress-percent">80%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 80%; background: linear-gradient(90deg, #9af167, #64b436);"></div>
+                </div>
+            </div>
+
+            <div class="progress-item">
+                <div class="progress-header">
+                    <span class="progress-label">North Region</span>
+                    <span class="progress-percent">75%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 75%; background: linear-gradient(90deg, #9af167, #64b436);"></div>
+                </div>
+            </div>
+
+            <div class="progress-item">
+                <div class="progress-header">
+                    <span class="progress-label">Central Region</span>
+                    <span class="progress-percent">67%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 67%; background: linear-gradient(90deg, #9af167, #64b436);"></div>
+                </div>
+            </div>
+
+            <div class="progress-item">
+                <div class="progress-header">
+                    <span class="progress-label">South Region</span>
+                    <span class="progress-percent">50%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 50%; background: linear-gradient(90deg, #9af167, #64b436);"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detailed Table -->
+        <div class="table-card">
+            <h3>📋 Detailed Office Statistics</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Office</th>
+                        <th colspan="2">PRs Received</th>
+                        <th colspan="2">Completed</th>
+                        <th>Savings (₱)</th>
+                        <th>Completion Rate</th>
+                    </tr>
+                    <tr>
+                        <th></th>
+                        <th>#</th>
+                        <th>Amount</th>
+                        <th>#</th>
+                        <th>Amount</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>OVP</strong></td>
+                        <td class="number-cell">5</td>
+                        <td class="currency-cell">₱100,000</td>
+                        <td class="number-cell">4</td>
+                        <td class="currency-cell">₱80,000</td>
+                        <td class="currency-cell">₱5,000</td>
+                        <td><strong>80%</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>North</strong></td>
+                        <td class="number-cell">4</td>
+                        <td class="currency-cell">₱2,000,000</td>
+                        <td class="number-cell">3</td>
+                        <td class="currency-cell">₱1,600,000</td>
+                        <td class="currency-cell">₱120,000</td>
+                        <td><strong>75%</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Central</strong></td>
+                        <td class="number-cell">3</td>
+                        <td class="currency-cell">₱300,000</td>
+                        <td class="number-cell">2</td>
+                        <td class="currency-cell">₱240,000</td>
+                        <td class="currency-cell">₱7,500</td>
+                        <td><strong>67%</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>South</strong></td>
+                        <td class="number-cell">2</td>
+                        <td class="currency-cell">₱400,000</td>
+                        <td class="number-cell">1</td>
+                        <td class="currency-cell">₱320,000</td>
+                        <td class="currency-cell">₱11,000</td>
+                        <td><strong>50%</strong></td>
+                    </tr>
+                    <tr style="background: linear-gradient(90deg, #667eea22, #764ba222); font-weight: bold;">
+                        <td>TOTAL</td>
+                        <td class="number-cell">14</td>
+                        <td class="currency-cell">₱2,800,000</td>
+                        <td class="number-cell">10</td>
+                        <td class="currency-cell">₱2,240,000</td>
+                        <td class="currency-cell">₱143,500</td>
+                        <td><strong>71.43%</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Monthly Report -->
+        <div class="table-card">
+            <h3>📅 Monthly Contract Timeline</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Contract Type</th>
+                        <th>Jan</th>
+                        <th>Feb</th>
+                        <th>Mar</th>
+                        <th>Apr</th>
+                        <th>May</th>
+                        <th>Jun</th>
+                        <th>Jul</th>
+                        <th>Aug</th>
+                        <th>Sep</th>
+                        <th>Oct</th>
+                        <th>Nov</th>
+                        <th>Dec</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Purchase Order</strong></td>
+                        <td>✓</td>
+                        <td>✓</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Job Order</strong></td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>✓</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td><strong>APR</strong></td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>✓</td>
+                        <td>✓</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Contract Agreement</strong></td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>✓</td>
+                        <td>✓</td>
+                        <td>✓</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+ 
+        <footer class="footer">
+            <p>&copy; 2026 OJT's WEBSITE PROJECT. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Office Performance Chart (Bar Chart)
+        const officeCtx = document.getElementById('officeChart').getContext('2d');
+        new Chart(officeCtx, {
+            type: 'bar',
+            data: {
+                labels: ['OVP', 'North', 'Central', 'South'],
+                datasets: [
+                    {
+                        label: 'PRs Received (#)',
+                        data: [5, 4, 3, 2],
+                        backgroundColor: '#073B3A',
+                        borderRadius: 5,
+                        borderSkipped: false
+                    },
+                    {
+                        label: 'Completed (#)',
+                        data: [4, 3, 2, 1],
+                        backgroundColor: '#08A045',
+                        borderRadius: 5,
+                        borderSkipped: false
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            boxWidth: 12,
+                            padding: 15,
+                            font: { size: 12 }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { stepSize: 1 }
+                    }
+                }
+            }
+        });
+
+        // Budget Allocation Chart (Doughnut Chart)
+        const budgetCtx = document.getElementById('budgetChart').getContext('2d');
+        new Chart(budgetCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['North', 'OVP', 'South', 'Central'],
+                datasets: [{
+                    data: [2000000, 100000, 400000, 300000],
+                    backgroundColor: [
+                        '#6BBF59',
+                        '#08A045',
+                        '#0B6E4F',
+                        '#073B3A'
+                    ],
+                    borderColor: 'white',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            boxWidth: 12,
+                            padding: 15,
+                            font: { size: 12 }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const value = context.parsed;
+                                return '₱' + value.toLocaleString();
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
